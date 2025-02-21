@@ -1,0 +1,27 @@
+{
+  "location": {
+    "front": 12,
+    "left": 8
+  },
+  "absoluteEncoderOffset": 0,
+  "drive": {
+    "type": "sparkmax_neo",
+    "id": 8,
+    "canbus": 0
+  },
+  "angle": {
+    "type": "sparkmax_neo",
+    "id": 7,
+    "canbus": 0
+  },
+  "encoder": {
+    "type": "talonsrx_pwm",
+    "id": 11,
+    "canbus": 0
+  },
+  "inverted": {
+    "drive": false,
+    "angle": false
+  },
+  "absoluteEncoderInverted": false
+}
