@@ -38,7 +38,7 @@ public class SwerveDriveCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         // Stop the drivetrain
-        swerveDriveSubsystem.drive(0, 0, 0, false);;
+        swerveDriveSubsystem.drive(0, 0, 0);;
     }
     
 }
