@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.io.IOException;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -14,14 +16,14 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
-    private double maximumSpeed = Units.feetToMeters(3);
+    private double maximumVelocity = Units.feetToMeters(3);
     private SwerveDrive swerveDrive; // Define this in the constructor
 
     public SwerveDriveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
         try {
-            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
+            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumVelocity);
         } catch (IOException e) {
             throw new RuntimeException("ERROR: Unable to read YAGSL JSON. Please add JSON files to the deploy/swerve directory.");
         }
@@ -36,7 +38,26 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.drive(translation, rotation, fieldRelative, false);
     }
 
-    public void driveFieldOriented(ChassisSpeeds velocity) {
-        swerveDrive.driveFieldOriented(velocity);
+    public void drive(double x, double y, double rotation, boolean fieldOriented) {
+        Translation2d translation = new Translation2d(
+            x * maximumVelocity,
+            y * maximumVelocity
+        );
+        double angularRotation = rotation * swerveDrive.getMaximumChassisAngularVelocity();
+        
+        swerveDrive.drive(translation, angularRotation, fieldOriented, false);
+    }
+
+    public double getMaximumVelocity() {
+        return maximumVelocity;
+    }
+
+    // Gets the current pose (position and rotation) of the robot, as reported by odometry.
+    public Pose2d getPose() {
+        return swerveDrive.getPose();
+    }
+
+    public Rotation2d getRotation() {
+        return getPose().getRotation();
     }
 }

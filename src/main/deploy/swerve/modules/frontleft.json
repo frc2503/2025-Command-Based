@@ -15,7 +15,7 @@
     "canbus": 0
   },
   "encoder": {
-    "type": "talonsrx_pwm",
+    "type": "cancoder",
     "id": 9,
     "canbus": 0
   },
