@@ -18,6 +18,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveDriveSubsystem extends SubsystemBase {
     private double maximumVelocity = Units.feetToMeters(3);
     private SwerveDrive swerveDrive; // Define this in the constructor
+    private boolean isFieldOriented = true;
 
     public SwerveDriveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -33,19 +34,15 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.setAngularVelocityCompensation(true,true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
     }
-    
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
-        swerveDrive.drive(translation, rotation, fieldRelative, false);
-    }
 
-    public void drive(double x, double y, double rotation, boolean fieldOriented) {
+    public void drive(double x, double y, double rotation) {
         Translation2d translation = new Translation2d(
             x * maximumVelocity,
             y * maximumVelocity
         );
         double angularRotation = rotation * swerveDrive.getMaximumChassisAngularVelocity();
         
-        swerveDrive.drive(translation, angularRotation, fieldOriented, false);
+        swerveDrive.drive(translation, angularRotation, isFieldOriented, false);
     }
 
     public double getMaximumVelocity() {
@@ -59,5 +56,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public Rotation2d getRotation() {
         return getPose().getRotation();
+    }
+
+    public void toggleFieldOriented() {
+        isFieldOriented = !isFieldOriented;
     }
 }

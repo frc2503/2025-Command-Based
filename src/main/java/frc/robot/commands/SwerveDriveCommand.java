@@ -31,8 +31,7 @@ public class SwerveDriveCommand extends Command {
         swerveDriveSubsystem.drive(
             driveXSupplier.getAsDouble(), 
             driveYSupplier.getAsDouble(), 
-            rotationSupplier.getAsDouble(), 
-            true // We can add functionality in the future to swap this between field oriented and robot oriented 
+            rotationSupplier.getAsDouble()
         );
     }
 
