@@ -44,9 +44,15 @@ public class RobotContainer {
     // Example of how to toggle field oriented on and off in swerve drive
     new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
 
-    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
-    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
-    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
+    // new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
+    // new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
+    // new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
+    new Trigger(mechController.rightTrigger())
+      .whileTrue(Commands.run(() -> elevator.testElevatorMotorUp()))
+      .onFalse(Commands.run(() -> elevator.stopMotor()));
+    new Trigger(mechController.leftTrigger())
+      .whileTrue(Commands.run(() -> elevator.testElevatorMotorDown()))
+      .onFalse(Commands.run(() -> elevator.stopMotor()));
   }
 
   public void onTeleopInit() {

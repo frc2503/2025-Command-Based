@@ -20,8 +20,5 @@ public final class Constants {
 
   public static class MotorConstants {
     public static final int ELEVATOR = 17;
-
-
-
   }
 }

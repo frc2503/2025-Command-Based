@@ -68,6 +68,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setReference(24, ControlType.kPosition);
   }
 
+  public void testElevatorMotorUp() {
+    elevator.set(0.05);
+  }
+
+  public void testElevatorMotorDown() {
+    elevator.set(-0.5);
+  }
+
+  public void stopMotor() {
+    elevator.set(0.0);
+  }
+
 
   @Override
   public void periodic() {
