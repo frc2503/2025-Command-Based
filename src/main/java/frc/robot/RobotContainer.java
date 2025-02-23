@@ -5,12 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.SwerveDriveCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,12 +20,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
-
-  public RobotContainer() {
+  private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
+    public RobotContainer() {
     // Register subsystems
     swerveDrive.register();
     // Configure the trigger bindings
@@ -45,35 +41,21 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    driveController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    
     // Example of how to toggle field oriented on and off in swerve drive
     new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
-  }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
+    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
+    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
   }
 
   public void onTeleopInit() {
     swerveDrive.setDefaultCommand(
       new SwerveDriveCommand(
-        swerveDrive, 
-        () -> driveController.getLeftX(), 
-        () -> driveController.getLeftY(), 
-        () -> driveController.getRightX()
+        swerveDrive,  
+        () -> -driveController.getLeftY(),
+        () -> -driveController.getLeftX(), 
+        () -> -driveController.getRightX()
       )
     );
   }
