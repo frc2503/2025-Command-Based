@@ -69,11 +69,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void testElevatorMotorUp() {
-    elevator.set(0.05);
+    elevator.set(-0.50);
   }
 
   public void testElevatorMotorDown() {
-    elevator.set(-0.5);
+    elevator.set(0.30);
   }
 
   public void stopMotor() {
