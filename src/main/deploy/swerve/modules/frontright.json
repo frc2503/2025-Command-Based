@@ -15,7 +15,7 @@
     "canbus": null
   },
   "encoder": {
-    "type": "none",
+    "type": "cancoder",
     "id": 11,
     "canbus": "rio"
   },
@@ -23,5 +23,5 @@
     "drive": true,
     "angle": true
   },
-  "absoluteEncoderInverted": true
+  "absoluteEncoderInverted": false
 }

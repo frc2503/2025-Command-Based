@@ -38,17 +38,21 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     config
       .idleMode(IdleMode.kBrake);
+  // configures the encoders to brake when not moving
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(0, 0, 0)
       .outputRange(-1, 1);
+  // configures PID controllers
     config.closedLoop.maxMotion
       .maxVelocity(2.5)
       .maxAcceleration(1);
+  //sets max velocity and acceleration for the elevator motor
     config.encoder
       .positionConversionFactor(getConversionFactor(48, 2.074));
-
-      elevator.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  // Sets conversion factor for the motor using the gearbox's gear ratio and the pitch of the elevator sprocket
+    elevator.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+   // Sets defaults for the elevator motor (don't touch these)
 
       encoder = elevator.getEncoder();
    }
@@ -57,16 +61,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     intendedState = ElevatorState.STAGE_ONE;
     pidController.setReference(0, ControlType.kPosition);
   }
+  // sets the intended state to stage 1 and starts movement to stage 1
 
   public void goToStageTwo(){
     intendedState = ElevatorState.STAGE_TWO;
     pidController.setReference(12, ControlType.kPosition);
   }
+  // sets the intended state to stage 2 and starts movement to stage 2
 
   public void goToStageThree(){
     intendedState = ElevatorState.STAGE_THREE;
     pidController.setReference(24, ControlType.kPosition);
   }
+  // sets the intended state to stage 3 and starts movement to stage 3
 
   public void testElevatorMotorUp() {
     elevator.set(-0.50);
@@ -87,10 +94,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     if(currentState != intendedState){
       if(intendedState == ElevatorState.STAGE_ONE && encoder.getPosition() <= 0){
         currentState = ElevatorState.STAGE_ONE;
+        //Sets the current position to stage 1 when it's at stage 1
       } else if (intendedState == ElevatorState.STAGE_TWO && withinBounds(12)){
         currentState = ElevatorState.STAGE_TWO;
+        //Sets the current position to stage 2 when it's at stage 2
       }else if (intendedState == ElevatorState.STAGE_THREE && withinBounds(24)){
         currentState = ElevatorState.STAGE_THREE;
+        //Sets the current position to stage 3 when it's at stage 3
         } else{
           currentState = ElevatorState.MOVING;
         }
@@ -103,10 +113,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     STAGE_THREE,
     MOVING
   }
+
   private boolean withinBounds(double setpoint){
     return encoder.getPosition() >= (setpoint - .25) && encoder.getPosition() <= (setpoint + .25);
   }
 
+//This whole function at the bottom sets the conversion factor so it sets the right height
   public double getConversionFactor(
     double gearRatio,
     double pitchDiameter

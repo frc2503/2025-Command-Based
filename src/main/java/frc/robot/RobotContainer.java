@@ -7,7 +7,9 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,6 +24,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
     public RobotContainer() {
@@ -43,16 +46,15 @@ public class RobotContainer {
   private void configureBindings() {
     // Example of how to toggle field oriented on and off in swerve drive
     new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
+    //Toggles field oriented driving when you press y on the driver's controller
 
-    // new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
-    // new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
-    // new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
-    new Trigger(mechController.rightTrigger())
-      .whileTrue(Commands.run(() -> elevator.testElevatorMotorUp()))
-      .onFalse(Commands.run(() -> elevator.stopMotor()));
-    new Trigger(mechController.leftTrigger())
-      .whileTrue(Commands.run(() -> elevator.testElevatorMotorDown()))
-      .onFalse(Commands.run(() -> elevator.stopMotor()));
+    new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> endEffector.spinIntake()));
+    //Spins the coral intake when the right trigger is held on the mech controller
+
+    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
+    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
+    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
+    //Switches elevator states when a, b, and y are pressed on the mech controller
   }
 
   public void onTeleopInit() {

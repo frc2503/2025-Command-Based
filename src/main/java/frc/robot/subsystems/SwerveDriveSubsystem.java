@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
@@ -17,9 +18,10 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveDriveSubsystem extends SubsystemBase {
     private double maximumVelocity = Units.feetToMeters(3);
     private SwerveDrive swerveDrive; // Define this in the constructor
-    private boolean isFieldOriented = true;
+    private boolean isFieldOriented = false;
 
     public SwerveDriveSubsystem() {
+
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
         try {
@@ -59,5 +61,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void toggleFieldOriented() {
         isFieldOriented = !isFieldOriented;
+        SmartDashboard.putBoolean("Field Oriented?", isFieldOriented);
     }
+
 }

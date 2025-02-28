@@ -20,5 +20,8 @@ public final class Constants {
 
   public static class MotorConstants {
     public static final int ELEVATOR = 17;
+    public static final int END_EFFECTOR = 18;
+    public static final int ALGAEARM = 19;
+    public static final int ALGAESPINNER = 20;
   }
 }
