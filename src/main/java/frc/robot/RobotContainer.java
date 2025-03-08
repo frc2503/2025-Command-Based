@@ -6,10 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,9 +25,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
+  private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
+  private final Joystick mechJoystick = new Joystick(1);
+  private double joystickDirection = mechJoystick.getRawAxis(1);
     public RobotContainer() {
     // Register subsystems
     swerveDrive.register();
@@ -48,13 +52,26 @@ public class RobotContainer {
     new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
     //Toggles field oriented driving when you press y on the driver's controller
 
-    new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> endEffector.spinIntake()));
+    new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> coralSubsystem.spinIntake()));
     //Spins the coral intake when the right trigger is held on the mech controller
 
     new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
     new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
     new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
     //Switches elevator states when a, b, and y are pressed on the mech controller
+     
+    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
+
+    if(joystickDirection > .25){
+      algaeIntake.armIn();
+    } 
+    //If you push the joystick back, the AlgaeArm goes down
+
+    if(joystickDirection < -.25){
+      algaeIntake.armOut();
+      //If you push the joystick forward, the AlgaeArm goes up
+    } 
+    
   }
 
   public void onTeleopInit() {

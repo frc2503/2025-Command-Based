@@ -74,6 +74,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setReference(24, ControlType.kPosition);
   }
   // sets the intended state to stage 3 and starts movement to stage 3
+  
 
   public void testElevatorMotorUp() {
     elevator.set(-0.50);
@@ -92,7 +93,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(currentState != intendedState){
-      if(intendedState == ElevatorState.STAGE_ONE && encoder.getPosition() <= 0){
+      if(intendedState == ElevatorState.STAGE_ONE && encoder.getPosition() <= 1.5){
         currentState = ElevatorState.STAGE_ONE;
         //Sets the current position to stage 1 when it's at stage 1
       } else if (intendedState == ElevatorState.STAGE_TWO && withinBounds(12)){

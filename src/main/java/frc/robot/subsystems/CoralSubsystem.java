@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorConstants;
 
-public class EndEffectorSubsystem extends SubsystemBase {
+public class CoralSubsystem extends SubsystemBase {
   private final SparkMax boxMotor;
   private final DigitalInput backSensor;
   private final DigitalInput frontSensor;
   public IntakeState intakeState;
   
   // Creates a new EndEffectorSubsystem. 
-  public EndEffectorSubsystem() {
+  public CoralSubsystem() {
     boxMotor = new SparkMax(MotorConstants.END_EFFECTOR, MotorType.kBrushless);
     backSensor = new DigitalInput(1);
     frontSensor = new DigitalInput(2);

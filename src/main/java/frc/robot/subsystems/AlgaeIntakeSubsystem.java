@@ -4,7 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,21 +21,60 @@ import frc.robot.Constants.MotorConstants;
 public class AlgaeIntakeSubsystem extends SubsystemBase {
 private final SparkMax algaeArm;
 private final SparkMax algaeSpinner;
+private final SparkClosedLoopController PIDcontroller;
+private final RelativeEncoder encoder;
+private final SparkMaxConfig config;
 
   public AlgaeIntakeSubsystem() {
     algaeArm = new SparkMax(MotorConstants.ALGAEARM, MotorType.kBrushless);
     algaeSpinner = new SparkMax(MotorConstants.ALGAESPINNER, MotorType.kBrushless);
+    PIDcontroller = algaeArm.getClosedLoopController();
+    encoder = algaeArm.getEncoder();
+    config = new SparkMaxConfig();
+
+    config
+      .idleMode(IdleMode.kBrake);
+  // configures the encoders to brake when not moving
+    config.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .pid(0, 0, 0)
+      .outputRange(-1, 1);
+  // configures PID controllers
+    config.closedLoop.maxMotion
+      .maxVelocity(2.5)
+      .maxAcceleration(1);
+  //sets max velocity and acceleration for the elevator motor
+    algaeArm.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+   // Sets defaults for the algaeArm motor (don't touch these)
   }
 
   public void armOut(){
+    if(encoder.getPosition() < (5) && movingToZero == false) {
+       moving = true;
     algaeArm.set(.5);
+    }
   }
-  //Algae arm moves outward
+  //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
 
   public void armIn(){
+    if(encoder.getPosition() >= (0) && movingToZero == false) {
+       moving = true;
     algaeArm.set(-.5);
+    }
   }
-  //Algae arm moves inwards
+  //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
+
+  public void armStop(){
+    moving = false;
+  }
+
+  public void goToZero(){
+    if(moving == false){
+      movingToZero = true;
+      PIDcontroller.setReference(0, ControlType.kPosition);
+    }
+  }
+  //When arm isn't moving and the command is called
 
   public void intakeL1(){
     algaeSpinner.set(.5);
@@ -39,8 +86,21 @@ private final SparkMax algaeSpinner;
   }
   //Spins Algae intake backward
 
+  private boolean withinBounds(double setpoint){
+    return encoder.getPosition() >= (setpoint - .25) && encoder.getPosition() <= (setpoint + .25);
+  }
+
+  private boolean moving = false;
+
+  private boolean movingToZero = false;
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if(movingToZero == true){
+      if(withinBounds(0)){
+        movingToZero = false;
+      }
+      //Tracks if the arm is moving to zero, and if it's within .25 inches, stop the arm
+    }
   }
 }
