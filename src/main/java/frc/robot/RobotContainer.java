@@ -34,6 +34,7 @@ public class RobotContainer {
     public RobotContainer() {
     // Register subsystems
     swerveDrive.register();
+    coralSubsystem.register();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -55,9 +56,9 @@ public class RobotContainer {
     new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> coralSubsystem.spinIntake()));
     //Spins the coral intake when the right trigger is held on the mech controller
 
-    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToStageOne()));
-    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToStageTwo()));
-    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToStageThree()));
+    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne()));
+    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo()));
+    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelThree()));
     //Switches elevator states when a, b, and y are pressed on the mech controller
      
     new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
@@ -72,6 +73,10 @@ public class RobotContainer {
       //If you push the joystick forward, the AlgaeArm goes up
     } 
     
+  }
+
+  public void onAutoInit() {
+    Commands.runOnce(() -> elevator.goToLevelOne());
   }
 
   public void onTeleopInit() {

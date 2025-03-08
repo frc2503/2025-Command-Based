@@ -30,26 +30,28 @@ public void spinIntake(){
 
   @Override
   public void periodic() {
-    if(backSensor.get()==true){
-    spinIntake();
-    intakeState = IntakeState.LOADING;
-   }
-   //Checks the back laserEye, and if it detects a coral, sets the intake state to loading
+    if (backSensor.get() == true && intakeState != IntakeState.LOADED) {
+      spinIntake();
+      intakeState = IntakeState.LOADING;
+    }
+    // Checks the back laserEye, and if it detects a coral, sets the intake state to
+    // loading
 
- if(backSensor.get()==false && frontSensor.get()==true){
-    intakeState = IntakeState.LOADED;
-  }
-  //Check the front and back laserEyes, if the front sees a coral and the back sees nothing, sets the intake state to loaded
+    if (backSensor.get() == false && frontSensor.get() == true) {
+      intakeState = IntakeState.LOADED;
+    }
+    // Check the front and back laserEyes, if the front sees a coral and the back
+    // sees nothing, sets the intake state to loaded
 
-  if(backSensor.get()==false && frontSensor.get()==false){
-    intakeState = IntakeState.EMPTY;
-  }
-  //If neither laserEye sees anything, set the intake state to empty
+    if (backSensor.get() == false && frontSensor.get() == false) {
+      intakeState = IntakeState.EMPTY;
+    }
+    // If neither laserEye sees anything, set the intake state to empty
   }
 
-public enum IntakeState{
-  EMPTY,
-  LOADING,
-  LOADED
-}
+  public enum IntakeState{
+    EMPTY,
+    LOADING,
+    LOADED
+  }
 }
