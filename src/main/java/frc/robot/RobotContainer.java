@@ -35,6 +35,7 @@ public class RobotContainer {
     // Register subsystems
     swerveDrive.register();
     coralSubsystem.register();
+    elevator.register();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -55,6 +56,8 @@ public class RobotContainer {
 
     new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> coralSubsystem.spinIntake()));
     //Spins the coral intake when the right trigger is held on the mech controller
+
+    new Trigger(mechController.rightBumper()).onTrue(Commands.run(() -> coralSubsystem.stopIntake()));
 
     new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne()));
     new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo()));

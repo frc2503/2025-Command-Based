@@ -24,7 +24,11 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
 public void spinIntake(){
-  boxMotor.set(.5);
+  boxMotor.set(-.5);
+}
+
+public void stopIntake(){
+  boxMotor.set(0);
 }
 //When the function is called, spin the box motor at a speed of .5
 
@@ -38,12 +42,14 @@ public void spinIntake(){
     // loading
 
     if (backSensor.get() == false && frontSensor.get() == true) {
+      stopIntake();
       intakeState = IntakeState.LOADED;
     }
     // Check the front and back laserEyes, if the front sees a coral and the back
     // sees nothing, sets the intake state to loaded
 
     if (backSensor.get() == false && frontSensor.get() == false) {
+      stopIntake();
       intakeState = IntakeState.EMPTY;
     }
     // If neither laserEye sees anything, set the intake state to empty

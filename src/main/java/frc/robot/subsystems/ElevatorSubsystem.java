@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorConstants;
 
@@ -95,21 +96,32 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Elevator Position", getConversionFactor(60, 2.074) * encoder.getPosition());
+    //System.out.println(encoder.getPosition());
+
     if (zeroSensor.get() == false && elevator.get() < 0) {
       elevator.set(0);
       currentState = ElevatorState.ZERO;
+      SmartDashboard.putBoolean("Elevator Zero", true);
+      SmartDashboard.putString("Elevator Level", "L1");
+
     } else {
+      SmartDashboard.putBoolean("Elevator Zero", false);
       // This method will be called once per scheduler run
       if (currentState != intendedState) {
         // TODO Get the actual positions we want these to set to
         if (intendedState == ElevatorState.CORAL_LEVEL_ONE && encoder.getPosition() <= 1.5) {
           currentState = ElevatorState.CORAL_LEVEL_ONE;
+          SmartDashboard.putString("Elevator Level", "L2");
           // Sets the current position to stage 1 when it's at stage 1
         } else if (intendedState == ElevatorState.CORAL_LEVEL_TWO && withinBounds(12)) {
           currentState = ElevatorState.CORAL_LEVEL_TWO;
+          SmartDashboard.putString("Elevator Level", "L3");
           // Sets the current position to stage 2 when it's at stage 2
         } else if (intendedState == ElevatorState.CORAL_LEVEL_THREE && withinBounds(24)) {
           currentState = ElevatorState.CORAL_LEVEL_THREE;
+          SmartDashboard.putString("Elevator Level", "L4");
           // Sets the current position to stage 3 when it's at stage 3
         } else {
           currentState = ElevatorState.MOVING;
