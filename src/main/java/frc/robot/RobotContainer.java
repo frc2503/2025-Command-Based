@@ -5,13 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,9 +31,8 @@ public class RobotContainer {
   private final FunnelSubsystem funnel = new FunnelSubsystem();
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
-  private final Joystick mechJoystick = new Joystick(1);
-  private double joystickDirection = mechJoystick.getRawAxis(1);
-    public RobotContainer() {
+
+  public RobotContainer() {
     // Register subsystems
     swerveDrive.register();
     coralSubsystem.register();
@@ -69,17 +68,9 @@ public class RobotContainer {
     new Trigger(mechController.povLeft()).onTrue(Commands.run(() -> funnel.climbing()));
     //Switches funnel states when d-pad buttons are pressed
      
-    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
-
-    if(joystickDirection > .25){
-      algaeIntake.armIn();
-    } 
-    //If you push the joystick back, the AlgaeArm goes down
-
-    if(joystickDirection < -.25){
-      algaeIntake.armOut();
-      //If you push the joystick forward, the AlgaeArm goes up
-    } 
+    new Trigger(mechController.leftTrigger()).whileTrue(Commands.run(() -> algaeIntake.intakePositive()));
+    new Trigger(mechController.leftBumper()).whileTrue(Commands.run(() -> algaeIntake.intakeNegative()));
+    //Triggers for algae intake. Moving the algae arm position is handled by the default command below
     
   }
 
@@ -94,6 +85,13 @@ public class RobotContainer {
         () -> -driveController.getLeftY(),
         () -> -driveController.getLeftX(), 
         () -> -driveController.getRightX()
+      )
+    );
+
+    algaeIntake.setDefaultCommand(
+      new AlgaeIntakeCommand(
+        algaeIntake,
+        () -> mechController.getLeftY()
       )
     );
   }

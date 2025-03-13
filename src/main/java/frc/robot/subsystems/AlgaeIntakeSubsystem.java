@@ -19,74 +19,62 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorConstants;
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
-private final SparkMax algaeArm;
-private final SparkMax algaeSpinner;
-private final SparkClosedLoopController PIDcontroller;
-private final RelativeEncoder encoder;
-private final SparkMaxConfig config;
+  private final SparkMax algaeArm;
+  private final SparkMax algaeSpinner;
+  private final SparkClosedLoopController pidController;
+  private final RelativeEncoder encoder;
+  private final SparkMaxConfig config;
+  private final double MAX_HEIGHT = 1.0; // TODO Adjust these for the actual min/max positions
+  private final double MIN_HEIGHT = 0.0;
 
   public AlgaeIntakeSubsystem() {
     algaeArm = new SparkMax(MotorConstants.ALGAEARM, MotorType.kBrushless);
     algaeSpinner = new SparkMax(MotorConstants.ALGAESPINNER, MotorType.kBrushless);
-    PIDcontroller = algaeArm.getClosedLoopController();
+    pidController = algaeArm.getClosedLoopController();
     encoder = algaeArm.getEncoder();
     config = new SparkMaxConfig();
 
     config
-      .idleMode(IdleMode.kBrake);
-  // configures the encoders to brake when not moving
+        .idleMode(IdleMode.kBrake);
+    // configures the encoders to brake when not moving
     config.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(0, 0, 0)
-      .outputRange(-1, 1);
-  // configures PID controllers
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .pid(0, 0, 0)
+        .outputRange(-1, 1);
+    // configures PID controllers
     config.closedLoop.maxMotion
-      .maxVelocity(2.5)
-      .maxAcceleration(1);
-  //sets max velocity and acceleration for the elevator motor
+        .maxVelocity(2.5)
+        .maxAcceleration(1);
+    // sets max velocity and acceleration for the elevator motor
     algaeArm.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-   // Sets defaults for the algaeArm motor (don't touch these)
+    // Sets defaults for the algaeArm motor (don't touch these)
+    encoder.setPosition(0);
   }
 
-  public void armOut(){
-    if(encoder.getPosition() < (5) && movingToZero == false) {
-       moving = true;
-    algaeArm.set(.5);
+  public void moveArmPosition(double armPositionSpeed) {
+    if (armPositionSpeed > 0 && encoder.getPosition() < MAX_HEIGHT) {
+      algaeArm.set(armPositionSpeed * 0.25); // TODO Just setting this 1/4 speed for now. Increase if it seems safe
+    } else if (armPositionSpeed < 0 && encoder.getPosition() > MIN_HEIGHT) {
+      algaeArm.set(armPositionSpeed * 0.25); // TODO Same as above
     }
   }
-  //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
 
-  public void armIn(){
-    if(encoder.getPosition() >= (0) && movingToZero == false) {
-       moving = true;
-    algaeArm.set(-.5);
-    }
+  public void goToZero() {
+    pidController.setReference(0, ControlType.kPosition);
   }
-  //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
+  // When arm isn't moving and the command is called
 
-  public void armStop(){
-    moving = false;
-  }
-
-  public void goToZero(){
-    if(moving == false){
-      movingToZero = true;
-      PIDcontroller.setReference(0, ControlType.kPosition);
-    }
-  }
-  //When arm isn't moving and the command is called
-
-  public void intakeL1(){
+  public void intakePositive() {
     algaeSpinner.set(.5);
   }
-  //Spins algae intake forward
+  // Spins algae intake forward
 
-  public void intakeL2(){
+  public void intakeNegative() {
     algaeSpinner.set(-.5);
   }
-  //Spins Algae intake backward
+  // Spins Algae intake backward
 
-  private boolean withinBounds(double setpoint){
+  private boolean withinBounds(double setpoint) {
     return encoder.getPosition() >= (setpoint - .25) && encoder.getPosition() <= (setpoint + .25);
   }
 
@@ -96,11 +84,12 @@ private final SparkMaxConfig config;
 
   @Override
   public void periodic() {
-    if(movingToZero == true){
-      if(withinBounds(0)){
+    if (movingToZero == true) {
+      if (withinBounds(0)) {
         movingToZero = false;
       }
-      //Tracks if the arm is moving to zero, and if it's within .25 inches, stop the arm
+      // Tracks if the arm is moving to zero, and if it's within .25 inches, stop the
+      // arm
     }
   }
 }
