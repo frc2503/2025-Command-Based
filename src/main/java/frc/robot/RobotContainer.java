@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
@@ -27,6 +28,7 @@ public class RobotContainer {
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
+  private final FunnelSubsystem funnel = new FunnelSubsystem();
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final Joystick mechJoystick = new Joystick(1);
@@ -53,13 +55,19 @@ public class RobotContainer {
     new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
     //Toggles field oriented driving when you press y on the driver's controller
 
-    new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> coralSubsystem.spinIntake()));
+    new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake()));
     //Spins the coral intake when the right trigger is held on the mech controller
 
     new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne()));
     new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo()));
     new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelThree()));
     //Switches elevator states when a, b, and y are pressed on the mech controller
+
+    new Trigger(mechController.povDown()).onTrue(Commands.run(() -> funnel.open()));
+    new Trigger(mechController.povRight()).onTrue(Commands.run(() -> funnel.semiClosed()));
+    new Trigger(mechController.povUp()).onTrue(Commands.run(() -> funnel.closed()));
+    new Trigger(mechController.povLeft()).onTrue(Commands.run(() -> funnel.climbing()));
+    //Switches funnel states when d-pad buttons are pressed
      
     new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
 
