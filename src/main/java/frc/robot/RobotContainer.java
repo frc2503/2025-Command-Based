@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgaeArmCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -36,6 +37,7 @@ public class RobotContainer {
     swerveDrive.register();
     coralSubsystem.register();
     elevator.register();
+    algaeIntake.register();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -51,22 +53,33 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Example of how to toggle field oriented on and off in swerve drive
-    new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
+    new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented(), swerveDrive));
     //Toggles field oriented driving when you press y on the driver's controller
 
-    new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> coralSubsystem.spinIntake()));
-    //Spins the coral intake when the right trigger is held on the mech controller
+    new Trigger(mechController.rightBumper()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake(), coralSubsystem));
+    //.onFalse(Commands.runOnce(() -> coralSubsystem.stopIntake(), coralSubsystem));
+    //Spins the coral intake when the right bumper is held on the mech controller
 
-    new Trigger(mechController.rightBumper()).onTrue(Commands.run(() -> coralSubsystem.stopIntake()));
+    //new Trigger(mechController.rightBumper()).onTrue(Commands.run(() -> coralSubsystem.stopIntake()));
 
-    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne()));
-    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo()));
-    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelThree()));
-    //Switches elevator states when a, b, and y are pressed on the mech controller
-     
+    new Trigger(mechController.a()).onTrue(Commands.runOnce(() -> elevator.goToLevelOne(), elevator));
+    new Trigger(mechController.b()).onTrue(Commands.runOnce(() -> elevator.goToLevelTwo(), elevator));
+    new Trigger(mechController.x()).onTrue(Commands.runOnce(() -> elevator.goToLevelThree(), elevator));
+    new Trigger(mechController.y()).onTrue(Commands.runOnce(() -> elevator.goToLevelFour(), elevator));
+    //Switches elevator states when a, b, x, and y are pressed on the mech controller
+
+    //new Trigger(mechController.button(7)).onTrue(Commands.run(() -> elevator.testElevatorMotorUp(), elevator)).onFalse(Commands.run(() -> elevator.stopMotor(), elevator));
+    //new Trigger(mechController.button(8)).onTrue(Commands.runOnce(() -> elevator.testElevatorMotorDown(), elevator)).onFalse(Commands.run(() -> elevator.stopMotor(), elevator));
+    
+    new Trigger(mechController.start()).onTrue(Commands.runOnce(() -> algaeIntake.armIn(), algaeIntake));
+    new Trigger(mechController.button(8)).onTrue(Commands.runOnce(() -> algaeIntake.armOut(), algaeIntake));
+    new Trigger(mechController.leftBumper()).whileTrue(Commands.runOnce(() -> algaeIntake.intakeL1(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
+    new Trigger(mechController.leftTrigger()).whileTrue(Commands.runOnce(() -> algaeIntake.intakeL2(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
+    
+
     new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
 
-    if(joystickDirection > .25){
+    /*if(joystickDirection > .25){
       algaeIntake.armIn();
     } 
     //If you push the joystick back, the AlgaeArm goes down
@@ -74,7 +87,7 @@ public class RobotContainer {
     if(joystickDirection < -.25){
       algaeIntake.armOut();
       //If you push the joystick forward, the AlgaeArm goes up
-    } 
+    } */
     
   }
 
@@ -83,6 +96,7 @@ public class RobotContainer {
   }
 
   public void onTeleopInit() {
+    Commands.runOnce(() -> elevator.goToLevelOne(), elevator);
     swerveDrive.setDefaultCommand(
       new SwerveDriveCommand(
         swerveDrive,  
@@ -91,5 +105,8 @@ public class RobotContainer {
         () -> -driveController.getRightX()
       )
     );
+
+    algaeIntake.setDefaultCommand(new AlgaeArmCommand(algaeIntake, -mechController.getLeftY()));
+
   }
 }

@@ -37,8 +37,8 @@ private final SparkMaxConfig config;
   // configures the encoders to brake when not moving
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(0, 0, 0)
-      .outputRange(-1, 1);
+      .pid(.3, 0, .01)
+      .outputRange(-.1, .1);
   // configures PID controllers
     config.closedLoop.maxMotion
       .maxVelocity(2.5)
@@ -51,7 +51,7 @@ private final SparkMaxConfig config;
   public void armOut(){
     if(encoder.getPosition() < (5) && movingToZero == false) {
        moving = true;
-    algaeArm.set(.5);
+       PIDcontroller.setReference(1, ControlType.kPosition);
     }
   }
   //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
@@ -59,8 +59,7 @@ private final SparkMaxConfig config;
   public void armIn(){
     if(encoder.getPosition() >= (0) && movingToZero == false) {
        moving = true;
-    algaeArm.set(-.5);
-    }
+       PIDcontroller.setReference(.5, ControlType.kPosition);    }
   }
   //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
 
@@ -77,14 +76,18 @@ private final SparkMaxConfig config;
   //When arm isn't moving and the command is called
 
   public void intakeL1(){
-    algaeSpinner.set(.5);
+    algaeSpinner.set(1);
   }
   //Spins algae intake forward
 
   public void intakeL2(){
-    algaeSpinner.set(-.5);
+    algaeSpinner.set(-1);
   }
   //Spins Algae intake backward
+
+  public void stopAlgaeIntake(){
+    algaeSpinner.set(0);
+  }
 
   private boolean withinBounds(double setpoint){
     return encoder.getPosition() >= (setpoint - .25) && encoder.getPosition() <= (setpoint + .25);

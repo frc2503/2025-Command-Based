@@ -46,8 +46,8 @@ public class FunnelSubsystem extends SubsystemBase {
   // configures the encoders to brake when not moving
     configLeft.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(0, 0, 0)
-      .outputRange(-1, 1);
+      .pid(.0001, 0, 0)
+      .outputRange(-.1, .1);
   // configures PID controllers
     configLeft.closedLoop.maxMotion
       .maxVelocity(2.5)
@@ -61,8 +61,8 @@ public class FunnelSubsystem extends SubsystemBase {
   // configures the encoders to brake when not moving
   configRight.closedLoop
    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-   .pid(0, 0, 0)
-   .outputRange(-1, 1);
+   .pid(.0001, 0, 0)
+   .outputRange(-.1, .1);
   // configures PID controllers
  configRight.closedLoop.maxMotion
    .maxVelocity(2.5)
