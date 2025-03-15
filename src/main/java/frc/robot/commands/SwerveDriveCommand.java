@@ -28,6 +28,22 @@ public class SwerveDriveCommand extends Command {
 
     @Override
     public void execute() {
+        // Assign stick inputs to variables, to prevent discrepancies
+        double driveX = driveXSupplier.getAsDouble();
+        double driveY = driveYSupplier.getAsDouble();
+        double rotation = rotationSupplier.getAsDouble();
+
+        // Create deadzones on the joysticks, to prevent stick drift
+        if (Math.abs(driveX) < 0.05) {
+            driveX = 0.0;
+        }
+        if (Math.abs(driveY) < 0.05) {
+            driveY = 0.0;
+        }
+        if (Math.abs(rotation) < 0.05) {
+            rotation = 0.0;
+        }
+
         swerveDriveSubsystem.drive(
             driveXSupplier.getAsDouble(), 
             driveYSupplier.getAsDouble(), 
