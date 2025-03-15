@@ -46,7 +46,7 @@ public class FunnelSubsystem extends SubsystemBase {
     currentState = FunnelState.NEUTRAL;
     
      configLeft
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kCoast);
     // configures the encoders to brake when not moving
     configLeft.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -61,7 +61,7 @@ public class FunnelSubsystem extends SubsystemBase {
     // Sets defaults for the elevator motor (don't touch these)
 
     configRight
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kCoast);
     // configures the encoders to brake when not moving
     configRight.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -86,8 +86,8 @@ public class FunnelSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(leftEncoder.getPosition());
-    System.out.println(rightEncoder.getPosition());
+    System.out.println("Left: " + leftEncoder.getPosition());
+    System.out.println("Right: " + rightEncoder.getPosition());
     /**
     if(currentState != intendedState){
       switch (intendedState) {

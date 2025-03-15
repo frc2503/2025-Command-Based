@@ -16,6 +16,8 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorConstants;
 
@@ -36,15 +38,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController = elevator.getClosedLoopController();
     currentState = ElevatorState.ZERO;
     intendedState = ElevatorState.ZERO;
-    zeroSensor = new DigitalInput(3); // TODO Figure out which channel this is on
+    zeroSensor = new DigitalInput(2); // TODO Figure out which channel this is on
 
     config
-        .idleMode(IdleMode.kBrake);
+        .idleMode(IdleMode.kCoast);
     // configures the encoders to brake when not moving
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(0, 0, 0)
-        .outputRange(-1, 1);
+        .pid(1.5, 0, 0)
+        .outputRange(-.4, .4);
     // configures PID controllers
     config.closedLoop.maxMotion
         .maxVelocity(2.5)
@@ -60,33 +62,39 @@ public class ElevatorSubsystem extends SubsystemBase {
     encoder = elevator.getEncoder();
 
     // The elevator should start each match at the zero position
-    encoder.setPosition(0);
+    //encoder.setPosition(0);
   }
 
   public void goToLevelOne() {
     intendedState = ElevatorState.CORAL_LEVEL_ONE;
-    pidController.setReference(0, ControlType.kPosition);
+    pidController.setReference(1.5, ControlType.kPosition);
   }
   // sets the intended state to stage 1 and starts movement to stage 1
 
   public void goToLevelTwo() {
     intendedState = ElevatorState.CORAL_LEVEL_TWO;
-    pidController.setReference(12, ControlType.kPosition);
+    pidController.setReference(5, ControlType.kPosition);
   }
   // sets the intended state to stage 2 and starts movement to stage 2
 
   public void goToLevelThree() {
     intendedState = ElevatorState.CORAL_LEVEL_THREE;
-    pidController.setReference(24, ControlType.kPosition);
+    pidController.setReference(13, ControlType.kPosition);
   }
   // sets the intended state to stage 3 and starts movement to stage 3
 
+  public void goToLevelFour() {
+    intendedState = ElevatorState.CORAL_LEVEL_FOUR;
+    pidController.setReference(25.25, ControlType.kPosition);
+  }
+  // sets the intended state to stage 4 and starts movement to stage 4
+
   public void testElevatorMotorUp() {
-    elevator.set(-0.50);
+    elevator.set(0.10);
   }
 
   public void testElevatorMotorDown() {
-    elevator.set(0.30);
+    elevator.set(-0.10);
   }
 
   public void stopMotor() {
@@ -95,23 +103,42 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (zeroSensor.get() == false && elevator.get() < 0) {
+
+    SmartDashboard.putNumber("Elevator Position", (getConversionFactor(60, 2.074) * encoder.getPosition()));
+    //System.out.println(encoder.getPosition());
+    //System.out.println(currentState);
+
+    if (zeroSensor.get() == true && encoder.getVelocity() <= 0) {
       elevator.set(0);
+      encoder.setPosition(0);
       currentState = ElevatorState.ZERO;
+      SmartDashboard.putBoolean("Elevator Zero", true);
+      SmartDashboard.putString("Elevator Level", "ZERO");
+
     } else {
+      SmartDashboard.putBoolean("Elevator Zero", false);
       // This method will be called once per scheduler run
       if (currentState != intendedState) {
         // TODO Get the actual positions we want these to set to
-        if (intendedState == ElevatorState.CORAL_LEVEL_ONE && encoder.getPosition() <= 1.5) {
+        if (intendedState == ElevatorState.CORAL_LEVEL_ONE && withinBounds(1.5)) {
           currentState = ElevatorState.CORAL_LEVEL_ONE;
+          SmartDashboard.putString("Elevator Level", "L1");
           // Sets the current position to stage 1 when it's at stage 1
-        } else if (intendedState == ElevatorState.CORAL_LEVEL_TWO && withinBounds(12)) {
+        } else if (intendedState == ElevatorState.CORAL_LEVEL_TWO && withinBounds(6)) {
           currentState = ElevatorState.CORAL_LEVEL_TWO;
+          SmartDashboard.putString("Elevator Level", "L2");
           // Sets the current position to stage 2 when it's at stage 2
         } else if (intendedState == ElevatorState.CORAL_LEVEL_THREE && withinBounds(24)) {
           currentState = ElevatorState.CORAL_LEVEL_THREE;
+          SmartDashboard.putString("Elevator Level", "L3");
           // Sets the current position to stage 3 when it's at stage 3
-        } else {
+        } else if (intendedState == ElevatorState.CORAL_LEVEL_FOUR && withinBounds(24)) {
+          currentState = ElevatorState.CORAL_LEVEL_FOUR;
+          SmartDashboard.putString("Elevator Level", "L4");
+          // Sets the current position to stage 3 when it's at stage 4
+        } 
+        
+        else {
           currentState = ElevatorState.MOVING;
         }
       }
@@ -123,11 +150,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     CORAL_LEVEL_ONE,
     CORAL_LEVEL_TWO,
     CORAL_LEVEL_THREE,
+    CORAL_LEVEL_FOUR,
     MOVING
   }
 
   private boolean withinBounds(double setpoint) {
-    return encoder.getPosition() >= (setpoint - .25) && encoder.getPosition() <= (setpoint + .25);
+    return encoder.getPosition() >= (setpoint - .05) && encoder.getPosition() <= (setpoint + .05);
   }
 
   // This whole function at the bottom sets the conversion factor so it sets the
