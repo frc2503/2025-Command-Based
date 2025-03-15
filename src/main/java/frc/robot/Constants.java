@@ -30,9 +30,9 @@ public final class Constants {
   public static class FunnelEncoderConstants {
     public static final double LEFT_ALIGN = 2.45;
     public static final double LEFT_NEUTRAL = 0;
-    public static final double LEFT_CLIMB = -15.09;
+    public static final double LEFT_CLIMB = -15;
     public static final double LEFT_POSTCLIMB = -3.76;
-    public static final double RIGHT_ALIGN = -3.38;
+    public static final double RIGHT_ALIGN = -3.3;
     public static final double RIGHT_NEUTRAL = 0;
     public static final double RIGHT_CLIMB = 18.64;
     public static final double RIGHT_POSTCLIMB = 4.52;

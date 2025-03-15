@@ -67,7 +67,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void goToLevelOne() {
     intendedState = ElevatorState.CORAL_LEVEL_ONE;
-    pidController.setReference(1.5, ControlType.kPosition);
+    pidController.setReference(1.1, ControlType.kPosition);
   }
   // sets the intended state to stage 1 and starts movement to stage 1
 
@@ -103,6 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(encoder.getPosition());
 
     SmartDashboard.putNumber("Elevator Position", (getConversionFactor(60, 2.074) * encoder.getPosition()));
     //System.out.println(encoder.getPosition());

@@ -31,7 +31,7 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
-  //private final FunnelCommands alignCommand = new FunnelCommands(funnelSubsystem);
+  private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final Joystick mechJoystick = new Joystick(1);
@@ -60,19 +60,18 @@ public class RobotContainer {
     new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
     //Toggles field oriented driving when you press y on the driver's controller
 
-    new Trigger(mechController.rightTrigger()).onTrue(Commands.run(() -> coralSubsystem.spinIntake()));
+    new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake()));
     //Spins the coral intake when the right trigger is held on the mech controller
 
     new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne()));
     new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo()));
     new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelThree()));
-    //new Trigger(mechController.x()).whileTrue(alignCommand);
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
-    new Trigger(mechController.pov(0)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.ALIGN)));
-    new Trigger(mechController.pov(90)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL)));
-    new Trigger(mechController.pov(180)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB)));
-    new Trigger(mechController.pov(270)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB)));
+    new Trigger(mechController.pov(0)).whileTrue(alignCommand);
+    new Trigger(mechController.pov(90)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL)));
+    new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB)));
+    new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB)));
      
     new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
 
@@ -93,13 +92,13 @@ public class RobotContainer {
   }
 
   public void onTeleopInit() {
-    swerveDrive.setDefaultCommand(
-      new SwerveDriveCommand(
-        swerveDrive,  
-        () -> -driveController.getLeftY(),
-        () -> -driveController.getLeftX(), 
-        () -> -driveController.getRightX()
-      )
-    );
+    // swerveDrive.setDefaultCommand(
+    //   new SwerveDriveCommand(
+    //     swerveDrive,  
+    //     () -> -driveController.getLeftY(),
+    //     () -> -driveController.getLeftX(), 
+    //     () -> -driveController.getRightX()
+    //   )
+    // );
   }
 }
