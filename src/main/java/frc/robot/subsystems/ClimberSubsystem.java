@@ -35,13 +35,13 @@ public class ClimberSubsystem extends SubsystemBase {
         if(timer.get() < 1) {
             servo.setAngle(0); //TODO find angle needed
         } else if(timer.get() > 1 ) {
-            climber.set(-.1); //TODO find positive or negative direction
+            climber.set(-.1); 
         }
     }
     //extends the climber outside of the robot to grab the cage
 
     public void climberIn() {
-        climber.set(.5); //TODO find positive or negative direction
+        climber.set(.5);
     }
     //Pulls the climber back into the robot completing the climb
 

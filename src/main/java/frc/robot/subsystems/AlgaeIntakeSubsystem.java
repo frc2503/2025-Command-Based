@@ -49,14 +49,22 @@ private final SparkMaxConfig config;
   }
 
   public void armOut(){
-    algaeArm.set(-.1);
+    if(encoder.getPosition() <= -.44) {
+      algaeArm.set(0);
+    } else{
+      algaeArm.set(-.1);
+    }
   }
-  //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
+  //Algae arm moves outward if the motor is at less than 5 rotations
 
   public void armIn(){
-    algaeArm.set(.1);
+    if(encoder.getPosition() >= -.01) {
+      algaeArm.set(0);
+    } else{
+      algaeArm.set(.1);
+    }
   }
-  //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
+  //Algae arm moves inward if the motor is at more than 5 rotations
 
   public void armStop(){
     algaeArm.set(0);
@@ -94,6 +102,9 @@ private final SparkMaxConfig config;
 
   @Override
   public void periodic() {
+
+    //System.out.println(encoder.getPosition());
+
     if(movingToZero == true){
       if(withinBounds(0)){
         movingToZero = false;
