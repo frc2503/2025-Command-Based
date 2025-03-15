@@ -92,13 +92,13 @@ public class RobotContainer {
   }
 
   public void onTeleopInit() {
-    // swerveDrive.setDefaultCommand(
-    //   new SwerveDriveCommand(
-    //     swerveDrive,  
-    //     () -> -driveController.getLeftY(),
-    //     () -> -driveController.getLeftX(), 
-    //     () -> -driveController.getRightX()
-    //   )
-    // );
+    swerveDrive.setDefaultCommand(
+      new SwerveDriveCommand(
+        swerveDrive,  
+        () -> -driveController.getLeftY(),
+        () -> -driveController.getLeftX(), 
+        () -> -driveController.getRightX()
+      )
+    );
   }
 }
