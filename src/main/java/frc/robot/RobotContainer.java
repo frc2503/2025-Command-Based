@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.FunnelAlignCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
+  private final ClimberSubsystem climber = new ClimberSubsystem();
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
   private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
@@ -57,33 +59,34 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Example of how to toggle field oriented on and off in swerve drive
-    new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented()));
+    new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented(), swerveDrive));
     //Toggles field oriented driving when you press y on the driver's controller
 
-    new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake()));
+    new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake(), coralSubsystem));
     //Spins the coral intake when the right trigger is held on the mech controller
 
-    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne()));
-    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo()));
-    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelThree()));
+    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne(), elevator));
+    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo(), elevator));
+    new Trigger(mechController.x()).onTrue(Commands.run(() -> elevator.goToLevelThree(), elevator));
+    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelFour(), elevator));
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
     new Trigger(mechController.pov(0)).whileTrue(alignCommand);
-    new Trigger(mechController.pov(90)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL)));
-    new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB)));
-    new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB)));
+    new Trigger(mechController.pov(90)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL), funnelSubsystem));
+    new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB), funnelSubsystem));
+    new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB), funnelSubsystem));
      
-    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
+    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero(), algaeIntake));
 
-    if(joystickDirection > .25){
-      algaeIntake.armIn();
-    } 
-    //If you push the joystick back, the AlgaeArm goes down
+    new Trigger(driveController.leftBumper()).onTrue(Commands.run(() -> climber.climberIn(), climber)).onFalse(Commands.runOnce(() -> climber.climberStop(), climber));
+    new Trigger(driveController.rightBumper()).onTrue(Commands.runOnce(() -> climber.timerStart(), climber)).onTrue(Commands.run(() -> climber.climberOut(), climber)).onFalse(Commands.runOnce(() -> climber.climberStop(), climber));
 
-    if(joystickDirection < -.25){
-      algaeIntake.armOut();
-      //If you push the joystick forward, the AlgaeArm goes up
-    } 
+    new Trigger(mechController.axisGreaterThan(1, .25)).whileTrue(Commands.run(() -> algaeIntake.armIn(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.armStop(), algaeIntake));
+    new Trigger(mechController.axisLessThan(1, -.25)).whileTrue(Commands.run(() -> algaeIntake.armOut(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.armStop(), algaeIntake));
+    new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntake.intakeL2(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
+    new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntake.intakeL1(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
+
+    
     
   }
 
@@ -100,5 +103,6 @@ public class RobotContainer {
         () -> -driveController.getRightX()
       )
     );
+    
   }
 }

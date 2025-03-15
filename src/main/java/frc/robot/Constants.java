@@ -25,6 +25,7 @@ public final class Constants {
     public static final int ALGAESPINNER = 15;
     public static final int FUNNELLEFT = 14;
     public static final int FUNNELRIGHT = 13;
+    public static final int CLIMBER = 16;
   }
 
   public static class FunnelEncoderConstants {

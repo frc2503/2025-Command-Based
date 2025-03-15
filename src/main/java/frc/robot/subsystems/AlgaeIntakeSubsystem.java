@@ -38,7 +38,7 @@ private final SparkMaxConfig config;
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(.3, 0, .01)
-      .outputRange(-.1, .1);
+      .outputRange(-.2, .2);
   // configures PID controllers
     config.closedLoop.maxMotion
       .maxVelocity(2.5)
@@ -49,22 +49,17 @@ private final SparkMaxConfig config;
   }
 
   public void armOut(){
-    if(encoder.getPosition() < (5) && movingToZero == false) {
-       moving = true;
-       PIDcontroller.setReference(1, ControlType.kPosition);
-    }
+    algaeArm.set(-.1);
   }
   //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
 
   public void armIn(){
-    if(encoder.getPosition() >= (0) && movingToZero == false) {
-       moving = true;
-       PIDcontroller.setReference(.5, ControlType.kPosition);    }
+    algaeArm.set(.1);
   }
   //Algae arm moves outward if the motor is at less than 5 rotations and isn't moving to zero
 
   public void armStop(){
-    moving = false;
+    algaeArm.set(0);
   }
 
   public void goToZero(){

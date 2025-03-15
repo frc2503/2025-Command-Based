@@ -38,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController = elevator.getClosedLoopController();
     currentState = ElevatorState.ZERO;
     intendedState = ElevatorState.ZERO;
-    zeroSensor = new DigitalInput(2); // TODO Figure out which channel this is on
+    zeroSensor = new DigitalInput(2); 
 
     config
         .idleMode(IdleMode.kCoast);
@@ -103,7 +103,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(encoder.getPosition());
 
     SmartDashboard.putNumber("Elevator Position", (getConversionFactor(60, 2.074) * encoder.getPosition()));
     //System.out.println(encoder.getPosition());
