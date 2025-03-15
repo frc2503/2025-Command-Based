@@ -88,7 +88,6 @@ public class FunnelSubsystem extends SubsystemBase {
   public void periodic() {
     System.out.println("Left: " + leftEncoder.getPosition());
     System.out.println("Right: " + rightEncoder.getPosition());
-    /**
     if(currentState != intendedState){
       switch (intendedState) {
         case ALIGN:
@@ -145,7 +144,6 @@ public class FunnelSubsystem extends SubsystemBase {
         break;
       }
     }
-    */
   }
 
   private boolean withinLeftBounds(double setpoint){
@@ -164,6 +162,9 @@ public class FunnelSubsystem extends SubsystemBase {
     rightPID.setReference(setpoint, ControlType.kPosition);
   }
 
+  public void setIntendedState(FunnelState state) {
+    intendedState = state;
+  }
 
   public enum FunnelState{
     MOVING,

@@ -28,13 +28,13 @@ public final class Constants {
   }
 
   public static class FunnelEncoderConstants {
-    public static final int LEFT_ALIGN = 0;
-    public static final int LEFT_NEUTRAL = 1;
-    public static final int LEFT_CLIMB = 2;
-    public static final int LEFT_POSTCLIMB = 3;
-    public static final int RIGHT_ALIGN = 0;
-    public static final int RIGHT_NEUTRAL = -1;
-    public static final int RIGHT_CLIMB = -2;
-    public static final int RIGHT_POSTCLIMB = -3;
+    public static final double LEFT_ALIGN = 2.45;
+    public static final double LEFT_NEUTRAL = 0;
+    public static final double LEFT_CLIMB = -15.09;
+    public static final double LEFT_POSTCLIMB = -3.76;
+    public static final double RIGHT_ALIGN = -3.38;
+    public static final double RIGHT_NEUTRAL = 0;
+    public static final double RIGHT_CLIMB = 18.64;
+    public static final double RIGHT_POSTCLIMB = 4.52;
   }
 }

@@ -12,6 +12,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.FunnelSubsystem.FunnelState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,7 +31,7 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
-  private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
+  //private final FunnelCommands alignCommand = new FunnelCommands(funnelSubsystem);
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final Joystick mechJoystick = new Joystick(1);
@@ -67,6 +68,11 @@ public class RobotContainer {
     new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelThree()));
     //new Trigger(mechController.x()).whileTrue(alignCommand);
     //Switches elevator states when a, b, and y are pressed on the mech controller
+
+    new Trigger(mechController.pov(0)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.ALIGN)));
+    new Trigger(mechController.pov(90)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL)));
+    new Trigger(mechController.pov(180)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB)));
+    new Trigger(mechController.pov(270)).onTrue(Commands.run(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB)));
      
     new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero()));
 

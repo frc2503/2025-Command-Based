@@ -21,5 +21,4 @@ public class FunnelAlignCommand extends Command {
     public void end(boolean interrupted) {
         funnelSubsystem.neutralPosition();
     }
-    
 }
