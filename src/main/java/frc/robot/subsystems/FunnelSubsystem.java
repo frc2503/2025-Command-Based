@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import javax.sound.sampled.Clip;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -15,6 +18,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FunnelEncoderConstants;
 import frc.robot.Constants.MotorConstants;
 
 public class FunnelSubsystem extends SubsystemBase {
@@ -38,68 +42,110 @@ public class FunnelSubsystem extends SubsystemBase {
     rightEncoder = rightMotor.getEncoder();
     leftPID = leftMotor.getClosedLoopController();
     rightPID = rightMotor.getClosedLoopController();
-    intendedState = FunnelState.POSITION0;
-    currentState = FunnelState.POSITION0;
+    intendedState = FunnelState.NEUTRAL;
+    currentState = FunnelState.NEUTRAL;
     
      configLeft
       .idleMode(IdleMode.kBrake);
-  // configures the encoders to brake when not moving
+    // configures the encoders to brake when not moving
     configLeft.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(0, 0, 0)
+      .pid(.1, 0, 0)
       .outputRange(-1, 1);
-  // configures PID controllers
+    // configures PID controllers
     configLeft.closedLoop.maxMotion
       .maxVelocity(2.5)
       .maxAcceleration(1);
-  //sets max velocity and acceleration for the Left motor
+    //sets max velocity and acceleration for the Left motor
     leftMotor.configure(configLeft, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-   // Sets defaults for the elevator motor (don't touch these)
+    // Sets defaults for the elevator motor (don't touch these)
 
     configRight
-    .idleMode(IdleMode.kBrake);
-  // configures the encoders to brake when not moving
-  configRight.closedLoop
-   .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-   .pid(0, 0, 0)
-   .outputRange(-1, 1);
-  // configures PID controllers
- configRight.closedLoop.maxMotion
-   .maxVelocity(2.5)
-   .maxAcceleration(1);
-  //sets max velocity and acceleration for the Right motor
- rightMotor.configure(configRight, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-  // Sets defaults for the elevator motor (don't touch these)
+      .idleMode(IdleMode.kBrake);
+    // configures the encoders to brake when not moving
+    configRight.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .pid(.1, 0, 0)
+      .outputRange(-1, 1);
+    // configures PID controllers
+    configRight.closedLoop.maxMotion
+      .maxVelocity(2.5)
+      .maxAcceleration(1);
+    //sets max velocity and acceleration for the Right motor
+    rightMotor.configure(configRight, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    // Sets defaults for the elevator motor (don't touch these)
   }
 
-  public void PositionZero(){
-    intendedState = FunnelState.POSITION0;
+  public void alignPosition(){
+    intendedState = FunnelState.ALIGN;
+  }
+
+  public void neutralPosition(){
+    intendedState = FunnelState.NEUTRAL;
   }
 
   @Override
   public void periodic() {
+    System.out.println(leftEncoder.getPosition());
+    System.out.println(rightEncoder.getPosition());
+    /**
     if(currentState != intendedState){
-      if(intendedState == FunnelState.POSITION0){
-        if(withinLeftBounds(0) && withinRightBounds(0)){
-          currentState = FunnelState.POSITION0;
-        }
-      }
-      if(intendedState == FunnelState.POSITION1){
-        if(withinLeftBounds(1) && withinRightBounds(-1)){
-          currentState = FunnelState.POSITION1;
-        }
-      }
-      if(intendedState == FunnelState.POSITION2){
-        if(withinLeftBounds(2) && withinRightBounds(-2)){
-          currentState = FunnelState.POSITION2;
-        }
-      }
-      if(intendedState == FunnelState.POSITION3){
-        if(withinLeftBounds(3) && withinRightBounds(-3)){
-          currentState = FunnelState.POSITION3;
-        }
+      switch (intendedState) {
+        case ALIGN:
+          if(withinLeftBounds(FunnelEncoderConstants.LEFT_ALIGN) && withinRightBounds(FunnelEncoderConstants.RIGHT_ALIGN)){
+            currentState = FunnelState.ALIGN;
+          } else {
+            currentState = FunnelState.MOVING;
+            if (!withinLeftBounds(FunnelEncoderConstants.LEFT_ALIGN)) {
+              leftMoveTo(FunnelEncoderConstants.LEFT_ALIGN);
+            }
+            if (!withinRightBounds(FunnelEncoderConstants.RIGHT_ALIGN)) {
+              rightMoveTo(FunnelEncoderConstants.RIGHT_ALIGN);
+            }
+          }
+        break;
+        case NEUTRAL:
+          if(withinLeftBounds(FunnelEncoderConstants.LEFT_NEUTRAL) && withinRightBounds(FunnelEncoderConstants.RIGHT_NEUTRAL)){
+            currentState = FunnelState.NEUTRAL;
+          } else {
+            currentState = FunnelState.MOVING;
+            if (!withinLeftBounds(FunnelEncoderConstants.LEFT_NEUTRAL)) {
+              leftMoveTo(FunnelEncoderConstants.LEFT_NEUTRAL);
+            }
+            if (!withinRightBounds(FunnelEncoderConstants.RIGHT_NEUTRAL)) {
+              rightMoveTo(FunnelEncoderConstants.RIGHT_NEUTRAL);
+            }
+          }
+        break;
+        case CLIMB:
+          if(withinLeftBounds(FunnelEncoderConstants.LEFT_CLIMB) && withinRightBounds(FunnelEncoderConstants.RIGHT_CLIMB)){
+            currentState = FunnelState.CLIMB;
+          } else {
+            currentState = FunnelState.MOVING;
+            if (!withinLeftBounds(FunnelEncoderConstants.LEFT_CLIMB)) {
+              leftMoveTo(FunnelEncoderConstants.LEFT_CLIMB);
+            }
+            if (!withinRightBounds(FunnelEncoderConstants.RIGHT_CLIMB)) {
+              rightMoveTo(FunnelEncoderConstants.RIGHT_CLIMB);
+            }
+          }
+        break;
+        case POSTCLIMB:
+          if(withinLeftBounds(FunnelEncoderConstants.LEFT_POSTCLIMB) && withinRightBounds(FunnelEncoderConstants.RIGHT_POSTCLIMB)){
+            currentState = FunnelState.POSTCLIMB;
+          } else {
+            currentState = FunnelState.MOVING;
+            if (!withinLeftBounds(FunnelEncoderConstants.LEFT_POSTCLIMB)) {
+              leftMoveTo(FunnelEncoderConstants.LEFT_POSTCLIMB);
+            }
+            if (!withinRightBounds(FunnelEncoderConstants.RIGHT_POSTCLIMB)) {
+              rightMoveTo(FunnelEncoderConstants.RIGHT_POSTCLIMB);
+            }
+          }
+        break;
       }
     }
+    */
   }
 
   private boolean withinLeftBounds(double setpoint){
@@ -110,12 +156,20 @@ public class FunnelSubsystem extends SubsystemBase {
     return rightEncoder.getPosition() >= (setpoint - .25) && rightEncoder.getPosition() <= (setpoint + .25);
   }
 
+  private void leftMoveTo(double setpoint){
+    leftPID.setReference(setpoint, ControlType.kPosition);
+  }
+
+  private void rightMoveTo(double setpoint){
+    rightPID.setReference(setpoint, ControlType.kPosition);
+  }
+
 
   public enum FunnelState{
     MOVING,
-    POSITION0,
-    POSITION1,
-    POSITION2,
-    POSITION3
+    NEUTRAL,
+    ALIGN,
+    CLIMB,
+    POSTCLIMB
   }
 }
