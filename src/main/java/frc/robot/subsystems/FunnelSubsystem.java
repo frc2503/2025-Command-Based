@@ -164,6 +164,10 @@ public class FunnelSubsystem extends SubsystemBase {
     intendedState = state;
   }
 
+  public FunnelState getIntendedState() {
+    return intendedState;
+  }
+
   public enum FunnelState{
     MOVING,
     NEUTRAL,

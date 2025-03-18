@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,17 +12,23 @@ public class SwerveDriveCommand extends Command {
     private DoubleSupplier driveXSupplier;
     private DoubleSupplier driveYSupplier;
     private DoubleSupplier rotationSupplier;
+    private DoubleSupplier speedScalarSupplier;
+    private BooleanSupplier fieldOrientedSupplier;
 
     public SwerveDriveCommand(
         SwerveDriveSubsystem driveSubsystem,
         DoubleSupplier x,
         DoubleSupplier y,
-        DoubleSupplier rotation
+        DoubleSupplier rotation,
+        DoubleSupplier speedScalar,
+        BooleanSupplier fieldOriented
     ) {
         swerveDriveSubsystem = driveSubsystem;
         driveXSupplier = x;
         driveYSupplier = y;
         rotationSupplier = rotation;
+        speedScalarSupplier = speedScalar;
+        fieldOrientedSupplier = fieldOriented;
 
         addRequirements(swerveDriveSubsystem);
     }
@@ -34,27 +41,23 @@ public class SwerveDriveCommand extends Command {
         double rotation = rotationSupplier.getAsDouble();
 
         // Create deadzones on the joysticks, to prevent stick drift
-        if (Math.abs(driveX) < 0.05) {
+        if (Math.abs(driveX) < 0.075) {
             driveX = 0.0;
         }
-        if (Math.abs(driveY) < 0.05) {
+        if (Math.abs(driveY) < 0.075) {
             driveY = 0.0;
         }
-        if (Math.abs(rotation) < 0.05) {
+        if (Math.abs(rotation) < 0.075) {
             rotation = 0.0;
         }
 
-        swerveDriveSubsystem.drive(
-            driveXSupplier.getAsDouble(), 
-            driveYSupplier.getAsDouble(), 
-            rotationSupplier.getAsDouble()
-        );
+        swerveDriveSubsystem.drive(driveX, driveY, rotation, speedScalarSupplier.getAsDouble(), fieldOrientedSupplier.getAsBoolean());
     }
 
     @Override
     public void end(boolean interrupted) {
         // Stop the drivetrain
-        swerveDriveSubsystem.drive(0, 0, 0);;
+        swerveDriveSubsystem.drive(0, 0, 0, 0, true);;
     }
     
 }

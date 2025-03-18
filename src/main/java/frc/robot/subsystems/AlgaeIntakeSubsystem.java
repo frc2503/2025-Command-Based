@@ -21,23 +21,25 @@ import frc.robot.Constants.MotorConstants;
 public class AlgaeIntakeSubsystem extends SubsystemBase {
 private final SparkMax algaeArm;
 private final SparkMax algaeSpinner;
-private final SparkClosedLoopController PIDcontroller;
+private final SparkClosedLoopController armPID;
 private final RelativeEncoder encoder;
 private final SparkMaxConfig config;
+private double setpoint;
 
   public AlgaeIntakeSubsystem() {
     algaeArm = new SparkMax(MotorConstants.ALGAEARM, MotorType.kBrushless);
     algaeSpinner = new SparkMax(MotorConstants.ALGAESPINNER, MotorType.kBrushless);
-    PIDcontroller = algaeArm.getClosedLoopController();
+    armPID = algaeArm.getClosedLoopController();
     encoder = algaeArm.getEncoder();
     config = new SparkMaxConfig();
+    setpoint = 0;
 
     config
       .idleMode(IdleMode.kBrake);
   // configures the encoders to brake when not moving
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(.3, 0, .01)
+      .pid(3, 0.001,0)
       .outputRange(-.2, .2);
   // configures PID controllers
     config.closedLoop.maxMotion
@@ -48,7 +50,16 @@ private final SparkMaxConfig config;
    // Sets defaults for the algaeArm motor (don't touch these)
   }
 
-  public void armOut(){
+  public void updateSetpoint(double speed) {
+    setpoint += (speed/60);
+    if (setpoint < -.45) {
+      setpoint = -.45;
+    } else if (setpoint > 0) {
+      setpoint = 0;
+    }
+  }
+
+  public void armOut() {
     if(encoder.getPosition() <= -.44) {
       algaeArm.set(0);
     } else{
@@ -64,17 +75,9 @@ private final SparkMaxConfig config;
       algaeArm.set(.1);
     }
   }
-  //Algae arm moves inward if the motor is at more than 5 rotations
-
-  public void armStop(){
-    algaeArm.set(0);
-  }
 
   public void goToZero(){
-    if(moving == false){
-      movingToZero = true;
-      PIDcontroller.setReference(0, ControlType.kPosition);
-    }
+    setpoint = 0;
   }
   //When arm isn't moving and the command is called
 
@@ -92,24 +95,9 @@ private final SparkMaxConfig config;
     algaeSpinner.set(0);
   }
 
-  private boolean withinBounds(double setpoint){
-    return encoder.getPosition() >= (setpoint - .25) && encoder.getPosition() <= (setpoint + .25);
-  }
-
-  private boolean moving = false;
-
-  private boolean movingToZero = false;
-
   @Override
   public void periodic() {
-
-    //System.out.println(encoder.getPosition());
-
-    if(movingToZero == true){
-      if(withinBounds(0)){
-        movingToZero = false;
-      }
-      //Tracks if the arm is moving to zero, and if it's within .25 inches, stop the arm
-    }
+      System.out.println(setpoint);
+      armPID.setReference(setpoint, ControlType.kPosition);
   }
 }

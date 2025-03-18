@@ -5,6 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgaeArmCommand;
+import frc.robot.commands.ClimberInCommand;
+import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.FunnelAlignCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
@@ -27,15 +30,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
+  private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
-  private final ClimberSubsystem climber = new ClimberSubsystem();
+  private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntake, () -> mechController.getLeftY());
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
   private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
-  private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
-  private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
+  private final ClimberSubsystem climber = new ClimberSubsystem();
+  private final ClimberInCommand inCommand = new ClimberInCommand(climber, funnelSubsystem);
+  private final ClimberOutCommand outCommand = new ClimberOutCommand(climber, funnelSubsystem);
   private final Joystick mechJoystick = new Joystick(1);
   private double joystickDirection = mechJoystick.getRawAxis(1);
     public RobotContainer() {
@@ -58,10 +64,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Example of how to toggle field oriented on and off in swerve drive
-    new Trigger(driveController.y()).onTrue(Commands.run(() -> swerveDrive.toggleFieldOriented(), swerveDrive));
-    //Toggles field oriented driving when you press y on the driver's controller
-
     new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake(), coralSubsystem));
     //Spins the coral intake when the right trigger is held on the mech controller
 
@@ -78,16 +80,12 @@ public class RobotContainer {
      
     new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero(), algaeIntake));
 
-    new Trigger(driveController.leftBumper()).onTrue(Commands.run(() -> climber.climberIn(), climber)).onFalse(Commands.runOnce(() -> climber.climberStop(), climber));
-    new Trigger(driveController.rightBumper()).onTrue(Commands.runOnce(() -> climber.timerStart(), climber)).onTrue(Commands.run(() -> climber.climberOut(), climber)).onFalse(Commands.runOnce(() -> climber.climberStop(), climber));
+    new Trigger(driveController.leftBumper()).whileTrue(inCommand);
+    new Trigger(driveController.rightBumper()).whileTrue(outCommand);
 
-    new Trigger(mechController.axisGreaterThan(1, .25)).whileTrue(Commands.run(() -> algaeIntake.armIn(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.armStop(), algaeIntake));
-    new Trigger(mechController.axisLessThan(1, -.25)).whileTrue(Commands.run(() -> algaeIntake.armOut(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.armStop(), algaeIntake));
+    new Trigger(mechController.axisMagnitudeGreaterThan(1, .1)).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntake.intakeL2(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntake.intakeL1(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
-
-    
-    
   }
 
   public void onAutoInit() {
@@ -100,7 +98,9 @@ public class RobotContainer {
         swerveDrive,  
         () -> -driveController.getLeftY(),
         () -> -driveController.getLeftX(), 
-        () -> -driveController.getRightX()
+        () -> -driveController.getRightX(),
+        () -> (1 - (driveController.getRightTriggerAxis() / 2)),
+        () -> (driveController.getLeftTriggerAxis() < .25)
       )
     );
     

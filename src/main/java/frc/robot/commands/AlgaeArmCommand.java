@@ -7,26 +7,18 @@ import frc.robot.subsystems.AlgaeIntakeSubsystem;
 
 public class AlgaeArmCommand extends Command {
     private AlgaeIntakeSubsystem algae;
-    private Double armSpeed; 
+    private DoubleSupplier speed;
     
-    public AlgaeArmCommand(AlgaeIntakeSubsystem algae, Double armSpeed){
+    public AlgaeArmCommand(AlgaeIntakeSubsystem algae, DoubleSupplier speed){
         this.algae = algae;
-        this.armSpeed = armSpeed;
+        this.speed = speed;
 
         addRequirements(algae);
     }
 
     @Override
     public void execute() {
-
-        if(armSpeed > .25){
-            algae.intakeL1();
-        } else if(armSpeed < -.25){
-            algae.intakeL2();
-        } else {
-            algae.armStop();
-        }
-
+        algae.updateSetpoint(speed.getAsDouble());
     }
 
 
