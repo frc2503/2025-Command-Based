@@ -21,7 +21,12 @@ import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.FunnelSubsystem.FunnelState;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -38,26 +43,33 @@ public class RobotContainer {
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
-  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevator, coralSubsystem);
-  private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevator, coralSubsystem);
-  private final ElevatorLevelThreeCommand l3Command = new ElevatorLevelThreeCommand(elevator, coralSubsystem);
-  private final ElevatorLevelFourCommand l4Command = new ElevatorLevelFourCommand(elevator, coralSubsystem);
-  private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
-  private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntake, () -> mechController.getLeftY());
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevatorSubsystem, coralSubsystem);
+  private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevatorSubsystem, coralSubsystem);
+  private final ElevatorLevelThreeCommand l3Command = new ElevatorLevelThreeCommand(elevatorSubsystem, coralSubsystem);
+  private final ElevatorLevelFourCommand l4Command = new ElevatorLevelFourCommand(elevatorSubsystem, coralSubsystem);
+  private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
+  private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntakeSubsystem, () -> mechController.getLeftY());
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
   private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
-  private final ClimberSubsystem climber = new ClimberSubsystem();
-  private final ClimberInCommand inCommand = new ClimberInCommand(climber, funnelSubsystem);
-  private final ClimberOutCommand outCommand = new ClimberOutCommand(climber, funnelSubsystem);
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  private final ClimberInCommand inCommand = new ClimberInCommand(climberSubsystem, funnelSubsystem);
+  private final ClimberOutCommand outCommand = new ClimberOutCommand(climberSubsystem, funnelSubsystem);
+  private final SendableChooser<Command> autoChooser;
   private final Joystick mechJoystick = new Joystick(1);
   private double joystickDirection = mechJoystick.getRawAxis(1);
-    public RobotContainer() {
+
+  
+  public RobotContainer() {
     // Register subsystems
     swerveDrive.register();
     coralSubsystem.register();
+    elevatorSubsystem.register();
+    algaeIntakeSubsystem.register();
     funnelSubsystem.register();
+    climberSubsystem.register();
 
+    autoChooser = AutoBuilder.buildAutoChooser();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -86,18 +98,23 @@ public class RobotContainer {
     new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB), funnelSubsystem));
     new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB), funnelSubsystem));
      
-    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntake.goToZero(), algaeIntake));
+    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntakeSubsystem.goToZero(), algaeIntakeSubsystem));
 
     new Trigger(driveController.leftBumper()).whileTrue(inCommand);
     new Trigger(driveController.rightBumper()).whileTrue(outCommand);
 
     new Trigger(mechController.axisMagnitudeGreaterThan(1, .1)).whileTrue(armCommand);
-    new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntake.intakeL2(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
-    new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntake.intakeL1(), algaeIntake)).onFalse(Commands.runOnce(() -> algaeIntake.stopAlgaeIntake(), algaeIntake));
+    new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
+    new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
+  }
+
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
   }
 
   public void onAutoInit() {
     l1Command.schedule();
+    getAutonomousCommand().schedule();
   }
 
   public void onTeleopInit() {
@@ -112,6 +129,5 @@ public class RobotContainer {
         () -> (driveController.getLeftTriggerAxis() < .25)
       )
     );
-    
   }
 }
