@@ -8,6 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeArmCommand;
 import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
+import frc.robot.commands.ElevatorLevelOneCommand;
+import frc.robot.commands.ElevatorLevelTwoCommand;
+import frc.robot.commands.ElevatorLevelThreeCommand;
+import frc.robot.commands.ElevatorLevelFourCommand;
 import frc.robot.commands.FunnelAlignCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
@@ -33,8 +37,12 @@ public class RobotContainer {
   private final CommandXboxController driveController = new CommandXboxController(OperatorConstants.DriveControllerPort);
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
-  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevator, coralSubsystem);
+  private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevator, coralSubsystem);
+  private final ElevatorLevelThreeCommand l3Command = new ElevatorLevelThreeCommand(elevator, coralSubsystem);
+  private final ElevatorLevelFourCommand l4Command = new ElevatorLevelFourCommand(elevator, coralSubsystem);
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
   private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntake, () -> mechController.getLeftY());
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
@@ -67,10 +75,10 @@ public class RobotContainer {
     new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake(), coralSubsystem));
     //Spins the coral intake when the right trigger is held on the mech controller
 
-    new Trigger(mechController.a()).onTrue(Commands.run(() -> elevator.goToLevelOne(), elevator));
-    new Trigger(mechController.b()).onTrue(Commands.run(() -> elevator.goToLevelTwo(), elevator));
-    new Trigger(mechController.x()).onTrue(Commands.run(() -> elevator.goToLevelThree(), elevator));
-    new Trigger(mechController.y()).onTrue(Commands.run(() -> elevator.goToLevelFour(), elevator));
+    new Trigger(mechController.a()).onTrue(l1Command);
+    new Trigger(mechController.b()).onTrue(l2Command);
+    new Trigger(mechController.x()).onTrue(l3Command);
+    new Trigger(mechController.y()).onTrue(l4Command);
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
     new Trigger(mechController.pov(0)).whileTrue(alignCommand);
@@ -89,10 +97,11 @@ public class RobotContainer {
   }
 
   public void onAutoInit() {
-    Commands.runOnce(() -> elevator.goToLevelOne());
+    l1Command.schedule();
   }
 
   public void onTeleopInit() {
+    l1Command.schedule();
     swerveDrive.setDefaultCommand(
       new SwerveDriveCommand(
         swerveDrive,  

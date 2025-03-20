@@ -37,6 +37,11 @@ public void spinIntake(){
 public void stopIntake(){
   boxMotor.set(0);
 }
+
+public boolean getBackSensorState() {
+  return backSensor.get();
+}
+
 //If the motor is not set back to 0 it continues to run
 
   @Override

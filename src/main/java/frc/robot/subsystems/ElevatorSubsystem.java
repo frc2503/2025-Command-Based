@@ -16,7 +16,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorConstants;
@@ -38,7 +37,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController = elevator.getClosedLoopController();
     currentState = ElevatorState.ZERO;
     intendedState = ElevatorState.ZERO;
-    zeroSensor = new DigitalInput(2); 
+    zeroSensor = new DigitalInput(2);
 
     config
         .idleMode(IdleMode.kCoast);
@@ -103,7 +102,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     SmartDashboard.putNumber("Elevator Position", (getConversionFactor(60, 2.074) * encoder.getPosition()));
     //System.out.println(encoder.getPosition());
     //System.out.println(currentState);

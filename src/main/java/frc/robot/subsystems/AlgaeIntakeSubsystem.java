@@ -52,27 +52,10 @@ private double setpoint;
 
   public void updateSetpoint(double speed) {
     setpoint += (speed/60);
-    if (setpoint < -.45) {
-      setpoint = -.45;
+    if (setpoint < -.6) {
+      setpoint = -.6;
     } else if (setpoint > 0) {
       setpoint = 0;
-    }
-  }
-
-  public void armOut() {
-    if(encoder.getPosition() <= -.44) {
-      algaeArm.set(0);
-    } else{
-      algaeArm.set(-.1);
-    }
-  }
-  //Algae arm moves outward if the motor is at less than 5 rotations
-
-  public void armIn(){
-    if(encoder.getPosition() >= -.01) {
-      algaeArm.set(0);
-    } else{
-      algaeArm.set(.1);
     }
   }
 
