@@ -112,6 +112,7 @@ public class RobotContainer {
   }
 
   private void registerNamedCommands() {
+    NamedCommands.registerCommand("Elevator L1", l1Command);
     NamedCommands.registerCommand("Elevator L2", l2Command);
     NamedCommands.registerCommand("Shoot Coral", shootCommand);
   }
