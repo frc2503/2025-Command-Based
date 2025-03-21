@@ -100,6 +100,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevator.set(0.0);
   }
 
+  public ElevatorState getCurrentState() {
+    return currentState;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Position", (getConversionFactor(60, 2.074) * encoder.getPosition()));
@@ -118,26 +122,25 @@ public class ElevatorSubsystem extends SubsystemBase {
       // This method will be called once per scheduler run
       if (currentState != intendedState) {
         // TODO Get the actual positions we want these to set to
-        if (intendedState == ElevatorState.CORAL_LEVEL_ONE && withinBounds(1.5)) {
+        if (intendedState == ElevatorState.CORAL_LEVEL_ONE && withinBounds(1.1)) {
           currentState = ElevatorState.CORAL_LEVEL_ONE;
           SmartDashboard.putString("Elevator Level", "L1");
           // Sets the current position to stage 1 when it's at stage 1
-        } else if (intendedState == ElevatorState.CORAL_LEVEL_TWO && withinBounds(6)) {
+        } else if (intendedState == ElevatorState.CORAL_LEVEL_TWO && withinBounds(5)) {
           currentState = ElevatorState.CORAL_LEVEL_TWO;
           SmartDashboard.putString("Elevator Level", "L2");
           // Sets the current position to stage 2 when it's at stage 2
-        } else if (intendedState == ElevatorState.CORAL_LEVEL_THREE && withinBounds(24)) {
+        } else if (intendedState == ElevatorState.CORAL_LEVEL_THREE && withinBounds(13)) {
           currentState = ElevatorState.CORAL_LEVEL_THREE;
           SmartDashboard.putString("Elevator Level", "L3");
           // Sets the current position to stage 3 when it's at stage 3
-        } else if (intendedState == ElevatorState.CORAL_LEVEL_FOUR && withinBounds(24)) {
+        } else if (intendedState == ElevatorState.CORAL_LEVEL_FOUR && withinBounds(25.25)) {
           currentState = ElevatorState.CORAL_LEVEL_FOUR;
           SmartDashboard.putString("Elevator Level", "L4");
           // Sets the current position to stage 3 when it's at stage 4
-        } 
-        
-        else {
+        } else {
           currentState = ElevatorState.MOVING;
+          SmartDashboard.putString("Elevator Level", "Moving");
         }
       }
     }
@@ -153,14 +156,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   private boolean withinBounds(double setpoint) {
-    return encoder.getPosition() >= (setpoint - .05) && encoder.getPosition() <= (setpoint + .05);
+    return encoder.getPosition() >= (setpoint - .03) && encoder.getPosition() <= (setpoint + .03);
   }
 
   // This whole function at the bottom sets the conversion factor so it sets the
   // right height
   public double getConversionFactor(
-      double gearRatio,
-      double pitchDiameter) {
+    double gearRatio,
+    double pitchDiameter) {
     double circumference = pitchDiameter * Math.PI;
     return circumference / gearRatio;
   }

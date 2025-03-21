@@ -42,6 +42,10 @@ public boolean getBackSensorState() {
   return backSensor.get();
 }
 
+public boolean getFrontSensorState() {
+  return frontSensor.get();
+}
+
 //If the motor is not set back to 0 it continues to run
 
   @Override

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 
 public class ElevatorLevelFourCommand extends Command {
     private ElevatorSubsystem elevator;
@@ -16,9 +17,14 @@ public class ElevatorLevelFourCommand extends Command {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         if (coral.getBackSensorState() != true) {
             elevator.goToLevelFour();
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return elevator.getCurrentState() == ElevatorState.CORAL_LEVEL_FOUR;
     }
 }

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import javax.sound.sampled.Clip;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;

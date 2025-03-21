@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -22,7 +21,6 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
 private final SparkMax algaeArm;
 private final SparkMax algaeSpinner;
 private final SparkClosedLoopController armPID;
-private final RelativeEncoder encoder;
 private final SparkMaxConfig config;
 private double setpoint;
 
@@ -30,7 +28,6 @@ private double setpoint;
     algaeArm = new SparkMax(MotorConstants.ALGAEARM, MotorType.kBrushless);
     algaeSpinner = new SparkMax(MotorConstants.ALGAESPINNER, MotorType.kBrushless);
     armPID = algaeArm.getClosedLoopController();
-    encoder = algaeArm.getEncoder();
     config = new SparkMaxConfig();
     setpoint = 0;
 
@@ -80,7 +77,7 @@ private double setpoint;
 
   @Override
   public void periodic() {
-      System.out.println(setpoint);
+      //System.out.println(setpoint);
       armPID.setReference(setpoint, ControlType.kPosition);
   }
 }

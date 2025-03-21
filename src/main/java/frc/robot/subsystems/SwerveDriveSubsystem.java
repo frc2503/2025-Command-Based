@@ -1,23 +1,20 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import java.io.File;
 import java.io.IOException;
-import org.json.simple.parser.ParseException;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
@@ -32,9 +29,9 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
     private SwerveDrive swerveDrive; // Define this in the constructor
+    private final Field2d field;
 
     public SwerveDriveSubsystem() {
-
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
         try {
@@ -47,17 +44,27 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.setCosineCompensator(true);
         swerveDrive.setAngularVelocityCompensation(true,true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
-        DCMotor driveMotor = new DCMotor(DriveConstants.NOMINAL_VOLTAGE, DriveConstants.STALL_TORQUE, DriveConstants.STALL_CURRENT, DriveConstants.FREE_CURRENT, DriveConstants.FREE_RPM, DriveConstants.NUM_DRIVE_MOTORS);
-        ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.WHEEL_DIAMETER, DriveConstants.MAXIMUM_VELOCITY, DriveConstants.WHEEL_COEFFICIENT_OF_FRICTION, driveMotor, DriveConstants.DRIVE_CURRENT_LIMIT, DriveConstants.NUM_DRIVE_MOTORS);
-        Translation2d[] moduleOffsets = {DriveConstants.FRONT_LEFT_OFFSET, DriveConstants.FRONT_RIGHT_OFFSET, DriveConstants.BACK_LEFT_OFFSET, DriveConstants.BACK_RIGHT_OFFSET};
-        RobotConfig robotConfig = new RobotConfig(DriveConstants.MASS, DriveConstants.MOMENT_OF_INERTIA, moduleConfig, moduleOffsets);
+
+        RobotConfig robotConfig;
+        try{
+            robotConfig = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            DCMotor driveMotor = new DCMotor(DriveConstants.NOMINAL_VOLTAGE, DriveConstants.STALL_TORQUE, DriveConstants.STALL_CURRENT, DriveConstants.FREE_CURRENT, DriveConstants.FREE_RPM, DriveConstants.NUM_DRIVE_MOTORS);
+            ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.WHEEL_DIAMETER, DriveConstants.MAXIMUM_VELOCITY, DriveConstants.WHEEL_COEFFICIENT_OF_FRICTION, driveMotor, DriveConstants.DRIVE_CURRENT_LIMIT, DriveConstants.NUM_DRIVE_MOTORS);
+            Translation2d[] moduleOffsets = {DriveConstants.FRONT_LEFT_OFFSET, DriveConstants.FRONT_RIGHT_OFFSET, DriveConstants.BACK_LEFT_OFFSET, DriveConstants.BACK_RIGHT_OFFSET};
+            robotConfig = new RobotConfig(DriveConstants.MASS, DriveConstants.MOMENT_OF_INERTIA, moduleConfig, moduleOffsets);
+        }
+
         AutoBuilder.configure(this::getPose, swerveDrive::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
                 new PPHolonomicDriveController(
-                    new PIDConstants(5.0, 0.0, 0.0),
-                    new PIDConstants(5.0, 0.0, 0.0)),
+                    new PIDConstants(5, 0.0, 0.0),
+                    new PIDConstants(5, 0.0, 0.0)),
                 robotConfig,
                 () -> DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == DriverStation.Alliance.Red : false,
                 this);
+
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
     }
 
     public void drive(double x, double y, double rotation, double speedScalar, boolean fieldOriented) {
@@ -65,12 +72,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             x * getMaximumVelocity() * speedScalar,
             y * getMaximumVelocity() * speedScalar
         );
+
+        SmartDashboard.putNumber("X Intended Velosity", translation.getX());
+        SmartDashboard.putNumber("Y Intended Velosity", translation.getY());
+
         double angularRotation = rotation * swerveDrive.getMaximumChassisAngularVelocity() * speedScalar;
         
         swerveDrive.drive(translation, angularRotation, fieldOriented, false);
     }
 
     public void drive(ChassisSpeeds speeds, DriveFeedforwards feedforward) {
+        SmartDashboard.putNumber("X Intended Velosity", speeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("Y Intended Velosity", speeds.vyMetersPerSecond);
         swerveDrive.drive(speeds);
     }
 
@@ -85,5 +98,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public Rotation2d getRotation() {
         return getPose().getRotation();
+    }
+
+    @Override
+    public void periodic() {
+        field.setRobotPose(getPose());
     }
 }

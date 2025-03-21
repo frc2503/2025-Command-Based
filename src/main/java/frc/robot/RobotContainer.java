@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeArmCommand;
 import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
+import frc.robot.commands.CoralShootCommand;
 import frc.robot.commands.ElevatorLevelOneCommand;
 import frc.robot.commands.ElevatorLevelTwoCommand;
 import frc.robot.commands.ElevatorLevelThreeCommand;
@@ -23,9 +24,11 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.FunnelSubsystem.FunnelState;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,6 +46,7 @@ public class RobotContainer {
   private final CommandXboxController mechController = new CommandXboxController(OperatorConstants.MechControllerPort);
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private final CoralShootCommand shootCommand = new CoralShootCommand(coralSubsystem);
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevatorSubsystem, coralSubsystem);
@@ -56,9 +60,6 @@ public class RobotContainer {
   private final ClimberInCommand inCommand = new ClimberInCommand(climberSubsystem, funnelSubsystem);
   private final ClimberOutCommand outCommand = new ClimberOutCommand(climberSubsystem, funnelSubsystem);
   private final SendableChooser<Command> autoChooser;
-  private final Joystick mechJoystick = new Joystick(1);
-  private double joystickDirection = mechJoystick.getRawAxis(1);
-
   
   public RobotContainer() {
     // Register subsystems
@@ -69,9 +70,11 @@ public class RobotContainer {
     funnelSubsystem.register();
     climberSubsystem.register();
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    // Configure the trigger bindings
     configureBindings();
+    registerNamedCommands();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -84,7 +87,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new Trigger(mechController.rightTrigger()).whileTrue(Commands.run(() -> coralSubsystem.spinIntake(), coralSubsystem));
+    new Trigger(mechController.rightTrigger()).onTrue(shootCommand);
     //Spins the coral intake when the right trigger is held on the mech controller
 
     new Trigger(mechController.a()).onTrue(l1Command);
@@ -106,6 +109,11 @@ public class RobotContainer {
     new Trigger(mechController.axisMagnitudeGreaterThan(1, .1)).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
+  }
+
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("Elevator L2", l2Command);
+    NamedCommands.registerCommand("Shoot Coral", shootCommand);
   }
 
   public Command getAutonomousCommand() {

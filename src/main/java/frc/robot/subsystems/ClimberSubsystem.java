@@ -31,32 +31,25 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void climberOut() {
-        if(timer.get() < 0.5) {
-            servo.set(.7);
-        } else if(timer.get() > 0.5) {
-            climber.set(-.75); 
+        if (encoder.getPosition() > -53) {
+            if(timer.get() < 0.5) {
+                servo.set(.7);
+            } else if(timer.get() > 0.5) {
+                climber.set(-.75); 
+            }
+        } else {
+            climberStop();
         }
-        // if (encoder.getPosition() < 45) {
-        //     if(timer.get() < 0.5) {
-        //         servo.set(.7);
-        //     } else if(timer.get() > 0.5) {
-        //         climber.set(-.75); 
-        //     }
-        // } else {
-        //     climberStop();
-        // }
     }
     //extends the climber outside of the robot to grab the cage
 
     public void climberIn() {
-        servo.set(1);
-        climber.set(.75);
-        // if (encoder.getPosition() > 0) {
-        //     servo.set(1);
-        //     climber.set(.75);
-        // } else {
-        //     climberStop();
-        // }
+        if (encoder.getPosition() < 0) {
+            servo.set(1);
+            climber.set(.75);
+        } else {
+            climberStop();
+        }
     }
     //Pulls the climber back into the robot completing the climb
 
@@ -66,8 +59,4 @@ public class ClimberSubsystem extends SubsystemBase {
         servo.set(1);
     }
     //Stops the motor and resets the servo to re-engage the ratchet
-    @Override
-    public void periodic() {
-        System.out.println(encoder.getPosition());
-    }
 }

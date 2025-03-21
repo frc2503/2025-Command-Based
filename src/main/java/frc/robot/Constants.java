@@ -23,8 +23,8 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 public final class Constants {
   public static class DriveConstants {
     public static final int NOMINAL_VOLTAGE = 12;
-    public static final double STALL_TORQUE = 2.6 * 6.75;
-    public static final double STALL_CURRENT = 105;
+    public static final double STALL_TORQUE = .8 * 6.75;
+    public static final double STALL_CURRENT = 40;
     public static final double FREE_CURRENT = 1.8;
     public static final double FREE_RPM = 5676/6.75;
     public static final Distance WHEEL_DIAMETER = Units.Inch.of(4);
