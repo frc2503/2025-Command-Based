@@ -45,11 +45,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(1.5, 0, 0)
-        .outputRange(-.4, .4);
+        .outputRange(-.8, .8);
     // configures PID controllers
     config.closedLoop.maxMotion
-        .maxVelocity(2.5)
-        .maxAcceleration(1);
+        .maxVelocity(4)
+        .maxAcceleration(1.5);
     // sets max velocity and acceleration for the elevator motor
     config.encoder
         .positionConversionFactor(getConversionFactor(60, 2.074));
