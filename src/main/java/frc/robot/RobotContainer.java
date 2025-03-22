@@ -97,7 +97,7 @@ public class RobotContainer {
     new Trigger(mechController.y()).onTrue(l4Command);
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
-    new Trigger(mechController.pov(0)).whileTrue(alignCommand);
+    new Trigger(mechController.pov(0)).onTrue(alignCommand);
     new Trigger(mechController.pov(90)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL), funnelSubsystem));
     new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB), funnelSubsystem));
     new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB), funnelSubsystem));

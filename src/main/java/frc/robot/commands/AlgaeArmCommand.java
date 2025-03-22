@@ -20,6 +20,4 @@ public class AlgaeArmCommand extends Command {
     public void execute() {
         algae.updateSetpoint(speed.getAsDouble());
     }
-
-
 }
