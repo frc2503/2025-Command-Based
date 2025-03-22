@@ -15,6 +15,7 @@ import frc.robot.commands.ElevatorLevelThreeCommand;
 import frc.robot.commands.ElevatorLevelFourCommand;
 import frc.robot.commands.FunnelAlignCommand;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.WaitForCoralCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private final SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final CoralShootCommand shootCommand = new CoralShootCommand(coralSubsystem);
+  private final WaitForCoralCommand waitForCoral = new WaitForCoralCommand(coralSubsystem);
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevatorSubsystem, coralSubsystem);
@@ -112,9 +114,13 @@ public class RobotContainer {
   }
 
   private void registerNamedCommands() {
+    NamedCommands.registerCommand("Align Coral", alignCommand);
+    NamedCommands.registerCommand("Shoot Coral", shootCommand);
+    NamedCommands.registerCommand("Wait For Coral", waitForCoral);
     NamedCommands.registerCommand("Elevator L1", l1Command);
     NamedCommands.registerCommand("Elevator L2", l2Command);
-    NamedCommands.registerCommand("Shoot Coral", shootCommand);
+    NamedCommands.registerCommand("Elevator L3", l3Command);
+    NamedCommands.registerCommand("Elevator L4", l4Command);
   }
 
   public Command getAutonomousCommand() {
