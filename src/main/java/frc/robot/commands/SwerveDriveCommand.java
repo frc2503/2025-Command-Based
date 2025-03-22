@@ -12,21 +12,27 @@ public class SwerveDriveCommand extends Command {
     private DoubleSupplier driveXSupplier;
     private DoubleSupplier driveYSupplier;
     private DoubleSupplier rotationSupplier;
+    private DoubleSupplier operatorXSupplier;
+    private DoubleSupplier operatorYSupplier;
     private DoubleSupplier speedScalarSupplier;
     private BooleanSupplier fieldOrientedSupplier;
 
     public SwerveDriveCommand(
         SwerveDriveSubsystem driveSubsystem,
-        DoubleSupplier x,
-        DoubleSupplier y,
+        DoubleSupplier driveX,
+        DoubleSupplier driveY,
         DoubleSupplier rotation,
+        DoubleSupplier operatorX,
+        DoubleSupplier operatorY,
         DoubleSupplier speedScalar,
         BooleanSupplier fieldOriented
     ) {
         swerveDriveSubsystem = driveSubsystem;
-        driveXSupplier = x;
-        driveYSupplier = y;
+        driveXSupplier = driveX;
+        driveYSupplier = driveY;
         rotationSupplier = rotation;
+        operatorXSupplier = operatorX;
+        operatorYSupplier = operatorY;
         speedScalarSupplier = speedScalar;
         fieldOrientedSupplier = fieldOriented;
 
@@ -35,29 +41,20 @@ public class SwerveDriveCommand extends Command {
 
     @Override
     public void execute() {
-        // Assign stick inputs to variables, to prevent discrepancies
-        double driveX = driveXSupplier.getAsDouble();
-        double driveY = driveYSupplier.getAsDouble();
-        double rotation = rotationSupplier.getAsDouble();
-
-        // Create deadzones on the joysticks, to prevent stick drift
-        if (Math.abs(driveX) < 0.075) {
-            driveX = 0.0;
-        }
-        if (Math.abs(driveY) < 0.075) {
-            driveY = 0.0;
-        }
-        if (Math.abs(rotation) < 0.075) {
-            rotation = 0.0;
-        }
-
-        swerveDriveSubsystem.drive(driveX, driveY, rotation, speedScalarSupplier.getAsDouble(), fieldOrientedSupplier.getAsBoolean());
+        swerveDriveSubsystem.drive(
+            driveXSupplier.getAsDouble(), 
+            driveYSupplier.getAsDouble(), 
+            rotationSupplier.getAsDouble(), 
+            operatorXSupplier.getAsDouble(),
+            operatorYSupplier.getAsDouble(),
+            speedScalarSupplier.getAsDouble(), 
+            fieldOrientedSupplier.getAsBoolean());
     }
 
     @Override
     public void end(boolean interrupted) {
         // Stop the drivetrain
-        swerveDriveSubsystem.drive(0, 0, 0, 0, true);;
+        swerveDriveSubsystem.drive(0, 0, 0, 0, 0, 0, true);;
     }
     
 }

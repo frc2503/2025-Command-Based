@@ -27,7 +27,6 @@ import frc.robot.subsystems.FunnelSubsystem.FunnelState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -103,12 +102,12 @@ public class RobotContainer {
     new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB), funnelSubsystem));
     new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB), funnelSubsystem));
      
-    new Trigger(mechController.leftStick()).onTrue(Commands.run(() -> algaeIntakeSubsystem.goToZero(), algaeIntakeSubsystem));
+    new Trigger(mechController.rightStick()).onTrue(Commands.run(() -> algaeIntakeSubsystem.goToZero(), algaeIntakeSubsystem));
 
     new Trigger(driveController.leftBumper()).whileTrue(inCommand);
     new Trigger(driveController.rightBumper()).whileTrue(outCommand);
 
-    new Trigger(mechController.axisMagnitudeGreaterThan(1, .1)).whileTrue(armCommand);
+    new Trigger(mechController.axisMagnitudeGreaterThan(2, .1)).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
   }
@@ -140,6 +139,8 @@ public class RobotContainer {
         () -> -driveController.getLeftY(),
         () -> -driveController.getLeftX(), 
         () -> -driveController.getRightX(),
+        () -> -mechController.getLeftX(),
+        () -> -mechController.getLeftY(),
         () -> (1 - (driveController.getRightTriggerAxis() / 2)),
         () -> (driveController.getLeftTriggerAxis() < .25)
       )

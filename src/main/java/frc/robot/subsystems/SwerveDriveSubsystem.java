@@ -48,11 +48,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         RobotConfig robotConfig;
         try{
             robotConfig = RobotConfig.fromGUISettings();
+            SmartDashboard.putBoolean("Config is fallback?", false);
         } catch (Exception e) {
             DCMotor driveMotor = new DCMotor(DriveConstants.NOMINAL_VOLTAGE, DriveConstants.STALL_TORQUE, DriveConstants.STALL_CURRENT, DriveConstants.FREE_CURRENT, DriveConstants.FREE_RPM, DriveConstants.NUM_DRIVE_MOTORS);
             ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.WHEEL_DIAMETER, DriveConstants.MAXIMUM_VELOCITY, DriveConstants.WHEEL_COEFFICIENT_OF_FRICTION, driveMotor, DriveConstants.DRIVE_CURRENT_LIMIT, DriveConstants.NUM_DRIVE_MOTORS);
             Translation2d[] moduleOffsets = {DriveConstants.FRONT_LEFT_OFFSET, DriveConstants.FRONT_RIGHT_OFFSET, DriveConstants.BACK_LEFT_OFFSET, DriveConstants.BACK_RIGHT_OFFSET};
             robotConfig = new RobotConfig(DriveConstants.MASS, DriveConstants.MOMENT_OF_INERTIA, moduleConfig, moduleOffsets);
+            SmartDashboard.putBoolean("Config is fallback?", true);
         }
 
         AutoBuilder.configure(this::getPose, swerveDrive::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
@@ -67,16 +69,32 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putData("Field", field);
     }
 
-    public void drive(double x, double y, double rotation, double speedScalar, boolean fieldOriented) {
-        Translation2d translation = new Translation2d(
-            x * getMaximumVelocity() * speedScalar,
-            y * getMaximumVelocity() * speedScalar
-        );
+    public void drive(double driverX, double driverY, double driverRotation, double operatorX, double operatorY, double speedScalar, boolean fieldOriented) {
+        Translation2d driverTranslation = new Translation2d(driverX, driverY);
+
+        Translation2d operatorTranslation = new Translation2d(operatorX, operatorY);
+        if (fieldOriented) {
+            operatorTranslation = applyInverseFieldOriented(operatorTranslation);
+        }
+
+        Translation2d translation = driverTranslation.plus(operatorTranslation);
+        if (translation.getNorm() < 0.075) {
+            translation = Translation2d.kZero;
+        }
+
+        translation = translation.times(getMaximumVelocity());
+        if (translation.getNorm() > getMaximumVelocity()) {
+            translation.times(getMaximumVelocity() / translation.getNorm());
+        }
+        translation.times(speedScalar);
 
         SmartDashboard.putNumber("X Intended Velosity", translation.getX());
         SmartDashboard.putNumber("Y Intended Velosity", translation.getY());
 
-        double angularRotation = rotation * swerveDrive.getMaximumChassisAngularVelocity() * speedScalar;
+        if (driverRotation < 0.075) {
+            driverRotation = 0;
+        }
+        double angularRotation = driverRotation * swerveDrive.getMaximumChassisAngularVelocity() * speedScalar;
         
         swerveDrive.drive(translation, angularRotation, fieldOriented, false);
     }
@@ -85,6 +103,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("X Intended Velosity", speeds.vxMetersPerSecond);
         SmartDashboard.putNumber("Y Intended Velosity", speeds.vyMetersPerSecond);
         swerveDrive.drive(speeds);
+    }
+
+    private Translation2d applyInverseFieldOriented(Translation2d translation) {
+        return translation.rotateBy(getRotation());
     }
 
     public double getMaximumVelocity() {
