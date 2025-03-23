@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeArmCommand;
+import frc.robot.commands.AlignOnReefCommand;
 import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.CoralShootCommand;
@@ -22,6 +23,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.FunnelSubsystem.FunnelState;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -60,6 +62,8 @@ public class RobotContainer {
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final ClimberInCommand inCommand = new ClimberInCommand(climberSubsystem, funnelSubsystem);
   private final ClimberOutCommand outCommand = new ClimberOutCommand(climberSubsystem, funnelSubsystem);
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private final AlignOnReefCommand reefAlignCommand = new AlignOnReefCommand(visionSubsystem, swerveDrive);
   private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
@@ -70,6 +74,7 @@ public class RobotContainer {
     algaeIntakeSubsystem.register();
     funnelSubsystem.register();
     climberSubsystem.register();
+    visionSubsystem.register();
 
     configureBindings();
     registerNamedCommands();
@@ -120,6 +125,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator L2", l2Command);
     NamedCommands.registerCommand("Elevator L3", l3Command);
     NamedCommands.registerCommand("Elevator L4", l4Command);
+    NamedCommands.registerCommand("Align On Reef", reefAlignCommand);
   }
 
   public Command getAutonomousCommand() {

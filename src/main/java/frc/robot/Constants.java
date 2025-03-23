@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
@@ -29,6 +30,7 @@ public final class Constants {
     public static final double FREE_RPM = 5676/6.75;
     public static final Distance WHEEL_DIAMETER = Units.Inch.of(4);
     public static final LinearVelocity MAXIMUM_VELOCITY = Units.FeetPerSecond.of(9);
+    public static final LinearAcceleration MAXIMUM_ACCELERATION = Units.FeetPerSecondPerSecond.of(9);
     public static final double WHEEL_COEFFICIENT_OF_FRICTION = 1.19;
     public static final Current DRIVE_CURRENT_LIMIT = Units.Amps.of(40);
     public static final int NUM_DRIVE_MOTORS = 1;
