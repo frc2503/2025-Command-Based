@@ -22,6 +22,11 @@ public class AlignOnReefCommand extends Command {
     }
 
     @Override
+    public void end(boolean interrupted) {
+        swerve.stop();
+    }
+
+    @Override
     public boolean isFinished() {
         return vision.getTargetOffsetH() < 1;
     }

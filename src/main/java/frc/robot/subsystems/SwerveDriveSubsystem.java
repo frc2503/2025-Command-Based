@@ -105,6 +105,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.drive(speeds);
     }
 
+    public void stop() {
+        drive(0, 0, 0, 0, 0, 0, false);
+    }
+
     private Translation2d applyInverseFieldOriented(Translation2d translation) {
         return translation.rotateBy(getRotation());
     }
