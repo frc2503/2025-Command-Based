@@ -91,7 +91,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("X Intended Velosity", translation.getX());
         SmartDashboard.putNumber("Y Intended Velosity", translation.getY());
 
-        if (driverRotation < 0.075) {
+        if (Math.abs(driverRotation) < 0.075) {
             driverRotation = 0;
         }
         double angularRotation = driverRotation * swerveDrive.getMaximumChassisAngularVelocity() * speedScalar;
