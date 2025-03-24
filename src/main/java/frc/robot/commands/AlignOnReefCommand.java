@@ -1,10 +1,9 @@
-//package frc.robot.commands;
+package frc.robot.commands;
 
-//import edu.wpi.first.wpilibj2.command.Command;
-//import frc.robot.subsystems.SwerveDriveSubsystem;
-//import frc.robot.subsystems.VisionSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-/*
 public class AlignOnReefCommand extends Command {
     private VisionSubsystem vision;
     private SwerveDriveSubsystem swerve;
@@ -32,4 +31,3 @@ public class AlignOnReefCommand extends Command {
         return vision.getTargetOffsetH() < 1;
     }
 }
-*/

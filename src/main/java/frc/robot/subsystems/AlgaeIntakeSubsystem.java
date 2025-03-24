@@ -36,7 +36,7 @@ private double setpoint;
   // configures the encoders to brake when not moving
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(3, 0.001,0)
+      .pid(3, 0.001, 0)
       .outputRange(-.2, .2);
   // configures PID controllers
     config.closedLoop.maxMotion
