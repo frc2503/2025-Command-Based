@@ -58,12 +58,12 @@ public class RobotContainer {
   private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
   private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntakeSubsystem, () -> mechController.getRightY());
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
-  private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
+  private final FunnelAlignCommand centerCoralCommand = new FunnelAlignCommand(funnelSubsystem);
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final ClimberInCommand inCommand = new ClimberInCommand(climberSubsystem, funnelSubsystem);
   private final ClimberOutCommand outCommand = new ClimberOutCommand(climberSubsystem, funnelSubsystem);
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
-  private final AlignOnReefCommand reefAlignCommand = new AlignOnReefCommand(visionSubsystem, swerveDrive);
+  private final AlignOnReefCommand alignOnReefCommand = new AlignOnReefCommand(visionSubsystem, swerveDrive);
   private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
@@ -102,7 +102,7 @@ public class RobotContainer {
     new Trigger(mechController.y()).onTrue(l4Command);
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
-    new Trigger(mechController.pov(0)).onTrue(alignCommand);
+    new Trigger(mechController.pov(0)).onTrue(centerCoralCommand);
     new Trigger(mechController.pov(90)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.NEUTRAL), funnelSubsystem));
     new Trigger(mechController.pov(180)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.CLIMB), funnelSubsystem));
     new Trigger(mechController.pov(270)).onTrue(Commands.runOnce(() -> funnelSubsystem.setIntendedState(FunnelState.POSTCLIMB), funnelSubsystem));
@@ -118,14 +118,14 @@ public class RobotContainer {
   }
 
   private void registerNamedCommands() {
-    NamedCommands.registerCommand("Align Coral", alignCommand);
+    NamedCommands.registerCommand("Align Coral", centerCoralCommand);
     NamedCommands.registerCommand("Shoot Coral", shootCommand);
     NamedCommands.registerCommand("Wait For Coral", waitForCoral);
     NamedCommands.registerCommand("Elevator L1", l1Command);
     NamedCommands.registerCommand("Elevator L2", l2Command);
     NamedCommands.registerCommand("Elevator L3", l3Command);
     NamedCommands.registerCommand("Elevator L4", l4Command);
-    NamedCommands.registerCommand("Align On Reef", reefAlignCommand);
+    NamedCommands.registerCommand("Align On Reef", alignOnReefCommand);
   }
 
   public Command getAutonomousCommand() {
