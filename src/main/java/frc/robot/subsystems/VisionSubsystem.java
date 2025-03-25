@@ -42,4 +42,9 @@ public class VisionSubsystem extends SubsystemBase {
   public ProfiledPIDController getDrivePID() {
     return drivePID;
   }
+
+  @Override
+  public void periodic() {
+      System.out.println(TargetOffsetH);
+  }
 }
