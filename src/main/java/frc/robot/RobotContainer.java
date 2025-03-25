@@ -112,7 +112,7 @@ public class RobotContainer {
     new Trigger(driveController.leftBumper()).whileTrue(inCommand);
     new Trigger(driveController.rightBumper()).whileTrue(outCommand);
 
-    new Trigger(mechController.axisMagnitudeGreaterThan(5, .1)).whileTrue(armCommand);
+    new Trigger(() -> Math.abs(mechController.getRightY()) > .1).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
   }
