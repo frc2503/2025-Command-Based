@@ -56,7 +56,7 @@ public class RobotContainer {
   private final ElevatorLevelThreeCommand l3Command = new ElevatorLevelThreeCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelFourCommand l4Command = new ElevatorLevelFourCommand(elevatorSubsystem, coralSubsystem);
   private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
-  private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntakeSubsystem, () -> mechController.getLeftY());
+  private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntakeSubsystem, () -> mechController.getRightY());
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
   private final FunnelAlignCommand alignCommand = new FunnelAlignCommand(funnelSubsystem);
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -112,7 +112,7 @@ public class RobotContainer {
     new Trigger(driveController.leftBumper()).whileTrue(inCommand);
     new Trigger(driveController.rightBumper()).whileTrue(outCommand);
 
-    new Trigger(() -> Math.abs(mechController.getRightY()) > .1).whileTrue(armCommand);
+    new Trigger(mechController.axisMagnitudeGreaterThan(5, .1)).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
   }
