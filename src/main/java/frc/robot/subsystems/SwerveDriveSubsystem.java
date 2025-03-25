@@ -72,7 +72,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void drive(double driverX, double driverY, double driverRotation, double operatorX, double operatorY, double speedScalar, boolean fieldOriented) {
         Translation2d driverTranslation = new Translation2d(driverY, driverX);
 
-        Translation2d operatorTranslation = new Translation2d(operatorY/2, operatorX/2);
+        Translation2d operatorTranslation = new Translation2d(0, operatorX/2);
         if (fieldOriented) {
             operatorTranslation = applyInverseFieldOriented(operatorTranslation);
         }

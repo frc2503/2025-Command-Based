@@ -17,7 +17,7 @@ public class AlignOnReefCommand extends Command {
 
     @Override
     public void execute() {
-        swerve.drive(vision.getDrivePID().calculate(vision.getTargetOffsetH(), 0),
+        swerve.drive((vision.getDrivePID().calculate(vision.getTargetOffsetH(), 0)),
                     0, 0, 0, 0, 1, false);
     }
 
