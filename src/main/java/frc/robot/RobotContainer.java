@@ -142,11 +142,11 @@ public class RobotContainer {
     swerveDrive.setDefaultCommand(
       new SwerveDriveCommand(
         swerveDrive,  
-        () -> -driveController.getLeftY(),
-        () -> -driveController.getLeftX(), 
+        () -> -driveController.getLeftX(),
+        () -> -driveController.getLeftY(), 
         () -> -driveController.getRightX(),
-        () -> -mechController.getLeftY(),
         () -> -mechController.getLeftX(),
+        () -> -mechController.getLeftY(),
         () -> (1 - (driveController.getRightTriggerAxis() / 2)),
         () -> (driveController.getLeftTriggerAxis() < .25)
       )

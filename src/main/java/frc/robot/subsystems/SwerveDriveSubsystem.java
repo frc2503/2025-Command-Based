@@ -70,9 +70,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public void drive(double driverX, double driverY, double driverRotation, double operatorX, double operatorY, double speedScalar, boolean fieldOriented) {
-        Translation2d driverTranslation = new Translation2d(driverX, driverY);
+        Translation2d driverTranslation = new Translation2d(driverY, driverX);
 
-        Translation2d operatorTranslation = new Translation2d(operatorX/2, operatorY/2);
+        Translation2d operatorTranslation = new Translation2d(operatorY/2, operatorX/2);
         if (fieldOriented) {
             operatorTranslation = applyInverseFieldOriented(operatorTranslation);
         }
@@ -88,8 +88,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         }
         translation.times(speedScalar);
 
-        SmartDashboard.putNumber("X Intended Velosity", translation.getX());
-        SmartDashboard.putNumber("Y Intended Velosity", translation.getY());
+        SmartDashboard.putNumber("F/B Intended Velosity", translation.getX());
+        SmartDashboard.putNumber("L/R Intended Velosity", translation.getY());
 
         if (Math.abs(driverRotation) < 0.075) {
             driverRotation = 0;
