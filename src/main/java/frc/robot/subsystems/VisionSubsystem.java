@@ -45,6 +45,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-      System.out.println(TargetOffsetH);
+      System.out.println(TargetOffsetH.getDouble(0));
   }
 }
