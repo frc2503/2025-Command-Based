@@ -8,6 +8,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -21,17 +22,19 @@ public class VisionSubsystem extends SubsystemBase {
   private static NetworkTableEntry Pipeline;
   private static Constraints pidConstraints;
   private static ProfiledPIDController drivePID;
+  private double targetOffset;
+
 
   public VisionSubsystem() {
     inst = NetworkTableInstance.getDefault();
-    Limelight = inst.getTable("Reef-View");
+    Limelight = inst.getTable("limelight-intake");
     HasTarget = Limelight.getEntry("tv");
     TargetOffsetH = Limelight.getEntry("tx");
     TargetOffsetV = Limelight.getEntry("ty");
     TargetArea = Limelight.getEntry("ta");
     TargetSkew = Limelight.getEntry("ts");
     Pipeline = Limelight.getEntry("pipeline");
-    pidConstraints = new Constraints(1, 1);
+    pidConstraints = new Constraints(.5, .1);
     drivePID = new ProfiledPIDController(5, 0, 0, pidConstraints);
   }
 
@@ -39,12 +42,18 @@ public class VisionSubsystem extends SubsystemBase {
     return TargetOffsetH.getDouble(0);
   }
 
+  public double targetOffset() {
+    return  getDrivePID().calculate(getTargetOffsetH(), 0);
+  }
+
   public ProfiledPIDController getDrivePID() {
+    drivePID.reset(0);
     return drivePID;
   }
 
   @Override
   public void periodic() {
-      System.out.println(TargetOffsetH.getDouble(0));
+      //System.out.println(getTargetOffsetH());
+      SmartDashboard.putNumber("Offset", targetOffset());
   }
 }
