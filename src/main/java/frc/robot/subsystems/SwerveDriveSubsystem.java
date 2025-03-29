@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -59,12 +60,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             SmartDashboard.putBoolean("Config is fallback?", true);
         }
 
-        AutoBuilder.configure(this::getPose, swerveDrive::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
+        AutoBuilder.configure(this::getPose, this::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
                 new PPHolonomicDriveController(
                     new PIDConstants(0, 0,0),
                     new PIDConstants(1, 0, 0)),
                 robotConfig,
-                () -> DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == DriverStation.Alliance.Red : false,
+                () -> DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) : false,
                 this);
 
         field = new Field2d();
@@ -133,6 +134,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public Rotation2d getRotation() {
         return getPose().getRotation();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        swerveDrive.setGyro(new Rotation3d(swerveDrive.getRoll().getMeasure(), swerveDrive.getPitch().getMeasure(), pose.getRotation().getMeasure()));
+        swerveDrive.resetOdometry(pose);
     }
 
     @Override
