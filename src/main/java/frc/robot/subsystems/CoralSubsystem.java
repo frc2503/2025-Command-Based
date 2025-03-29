@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorConstants;
+import frc.robot.subsystems.CoralSubsystem.IntakeState;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 
 public class CoralSubsystem extends SubsystemBase {
   private final SparkMax boxMotor;
@@ -50,6 +52,13 @@ public boolean getFrontSensorState() {
 
   @Override
   public void periodic() {
+    if (frontSensor.get() == true) {
+      SmartDashboard.putBoolean("Front Sensor", true);
+
+    } else {
+      SmartDashboard.putBoolean("Front Sensor", false);
+    }
+
     if (backSensor.get() == true && intakeState != IntakeState.LOADED) {
       loadIntake();
       intakeState = IntakeState.LOADING;
@@ -80,6 +89,7 @@ public boolean getFrontSensorState() {
   public enum IntakeState{
     EMPTY,
     LOADING,
+    DISCHARGING,
     LOADED
   }
 }

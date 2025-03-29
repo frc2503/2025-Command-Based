@@ -23,23 +23,24 @@ import edu.wpi.first.units.measure.MomentOfInertia;
  */
 public final class Constants {
   public static class DriveConstants {
+    public static final double GEAR_RATIO = 6.75;
     public static final int NOMINAL_VOLTAGE = 12;
-    public static final double STALL_TORQUE = .8 * 6.75;
+    public static final double STALL_TORQUE = .8 * GEAR_RATIO;
     public static final double STALL_CURRENT = 40;
     public static final double FREE_CURRENT = 1.8;
-    public static final double FREE_RPM = 5676/6.75;
-    public static final Distance WHEEL_DIAMETER = Units.Inch.of(4);
+    public static final double FREE_RPM = 5676/GEAR_RATIO;
+    public static final Distance WHEEL_DIAMETER = Units.Inch.of(3.875);
     public static final LinearVelocity MAXIMUM_VELOCITY = Units.FeetPerSecond.of(9);
     public static final LinearAcceleration MAXIMUM_ACCELERATION = Units.FeetPerSecondPerSecond.of(9);
     public static final double WHEEL_COEFFICIENT_OF_FRICTION = 1.19;
     public static final Current DRIVE_CURRENT_LIMIT = Units.Amps.of(40);
     public static final int NUM_DRIVE_MOTORS = 1;
-    public static final Mass MASS = Units.Pounds.of(110);
-    public static final MomentOfInertia MOMENT_OF_INERTIA = Units.KilogramSquareMeters.of(2.4176702976);
-    public static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(-0.287401, 0.2957576);
-    public static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(0.287401, 0.2957576);
-    public static final Translation2d BACK_LEFT_OFFSET = new Translation2d(-0.287401, -0.2957576);
-    public static final Translation2d BACK_RIGHT_OFFSET = new Translation2d(0.287401, -0.2957576);
+    public static final Mass MASS = Units.Pounds.of(115);
+    public static final MomentOfInertia MOMENT_OF_INERTIA = Units.KilogramSquareMeters.of(5.500);
+    public static final Translation2d FRONT_LEFT_OFFSET = new Translation2d(-0.288925, 0.288925);
+    public static final Translation2d FRONT_RIGHT_OFFSET = new Translation2d(0.288925, 0.288925);
+    public static final Translation2d BACK_LEFT_OFFSET = new Translation2d(-0.288925, -0.288925);
+    public static final Translation2d BACK_RIGHT_OFFSET = new Translation2d(0.288925, -0.288925);
   }
 
   public static class OperatorConstants {
@@ -67,4 +68,20 @@ public final class Constants {
     public static final double RIGHT_CLIMB = 18.64;
     public static final double RIGHT_POSTCLIMB = 4.52;
   }
+  
+  public static class ElevatorConstants {
+    public static final double maxVelocity = 4;         //m/s
+    public static final double maxAcceleration = 1.5;   //m/s^2
+    public static final double outputRange = .9;
+
+    public static final double gearRatio = 60;
+    public static final double pitchDiameter = 2.074;   //in
+
+    public static final double L1 = 1.2;                //in
+    public static final double L2 = 5;                  //in
+    public static final double L3 = 13;                 //in
+    public static final double AlgaeL3 = 15;            //in
+    public static final double L4 = 25.25;              //in
+  }
 }
+

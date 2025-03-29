@@ -13,7 +13,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import swervelib.SwerveDrive;
@@ -26,6 +25,9 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.DriveFeedforwards;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 
 public class SwerveDriveSubsystem extends SubsystemBase {
     private SwerveDrive swerveDrive; // Define this in the constructor
@@ -59,8 +61,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         AutoBuilder.configure(this::getPose, swerveDrive::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
                 new PPHolonomicDriveController(
-                    new PIDConstants(5, 0.0, 0.0),
-                    new PIDConstants(5, 0.0, 0.0)),
+                    new PIDConstants(0, 0,0),
+                    new PIDConstants(1, 0, 0)),
                 robotConfig,
                 () -> DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == DriverStation.Alliance.Red : false,
                 this);
@@ -86,7 +88,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         if (translation.getNorm() > getMaximumVelocity()) {
             translation.times(getMaximumVelocity() / translation.getNorm());
         }
-        translation.times(speedScalar);
+        translation = translation.times(speedScalar);
+
+        SmartDashboard.putNumber("Speed Scale", speedScalar);
+
 
         SmartDashboard.putNumber("F/B Intended Velosity", translation.getX());
         SmartDashboard.putNumber("L/R Intended Velosity", translation.getY());
@@ -103,6 +108,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("X Intended Velosity", speeds.vxMetersPerSecond);
         SmartDashboard.putNumber("Y Intended Velosity", speeds.vyMetersPerSecond);
         swerveDrive.drive(speeds);
+    }
+
+    public void resetFieldOrientation() {
+        
     }
 
     public void stop() {

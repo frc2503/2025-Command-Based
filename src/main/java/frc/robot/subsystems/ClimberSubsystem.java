@@ -35,7 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
             if(timer.get() < 0.5) {
                 servo.set(.7);
             } else if(timer.get() > 0.5) {
-                climber.set(-.75); 
+                climber.set(-1); 
             }
         } else {
             climberStop();
@@ -46,7 +46,7 @@ public class ClimberSubsystem extends SubsystemBase {
     public void climberIn() {
         if (encoder.getPosition() < 0) {
             servo.set(1);
-            climber.set(.75);
+            climber.set(1);
         } else {
             climberStop();
         }

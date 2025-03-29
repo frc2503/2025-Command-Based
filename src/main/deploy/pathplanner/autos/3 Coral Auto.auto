@@ -9,15 +9,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Elevator L2"
+                  "pathName": "Start 1 to Reef G"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Align On Reef"
+                  "name": "Elevator L3"
                 }
               }
             ]
@@ -34,50 +34,74 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": null
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Elevator L1"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "G to Right Coral"
                 }
               }
             ]
           }
         },
         {
-          "type": "race",
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Coral to C"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Wait For Coral"
+                  "name": "Elevator L1"
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Align Coral"
-                      }
-                    }
-                  ]
+                  "pathName": "C to Right Coral"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -93,7 +117,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator L2"
+                  "name": "Elevator L3"
                 }
               }
             ]
@@ -102,19 +126,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Align On Reef"
+            "name": "Shoot Coral"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Shoot Coral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L1"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D to Start"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Blue",
   "choreoAuto": false
 }
