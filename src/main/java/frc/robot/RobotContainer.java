@@ -13,6 +13,7 @@ import frc.robot.commands.CoralShootCommand;
 import frc.robot.commands.ElevatorLevelOneCommand;
 import frc.robot.commands.ElevatorLevelTwoCommand;
 import frc.robot.commands.ElevatorLevelThreeCommand;
+import frc.robot.commands.ElevatorLevelThreeAlgaeCommand;
 import frc.robot.commands.ElevatorLevelFourCommand;
 import frc.robot.commands.FunnelAlignCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -54,6 +55,7 @@ public class RobotContainer {
   private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelThreeCommand l3Command = new ElevatorLevelThreeCommand(elevatorSubsystem, coralSubsystem);
+  private final ElevatorLevelThreeAlgaeCommand l3AlgaeCommand = new ElevatorLevelThreeAlgaeCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelFourCommand l4Command = new ElevatorLevelFourCommand(elevatorSubsystem, coralSubsystem);
   private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
   private final AlgaeArmCommand armCommand = new AlgaeArmCommand(algaeIntakeSubsystem, () -> mechController.getRightY());
@@ -99,7 +101,8 @@ public class RobotContainer {
     new Trigger(mechController.a()).onTrue(l1Command);
     new Trigger(mechController.b()).onTrue(l2Command);
     new Trigger(mechController.x()).onTrue(l3Command);
-    new Trigger(mechController.y()).onTrue(l4Command);
+    new Trigger(mechController.y()).onTrue(l3AlgaeCommand);
+    new Trigger(mechController.rightBumper()).onTrue(l4Command);
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
     new Trigger(mechController.pov(0)).onTrue(centerCoralCommand);

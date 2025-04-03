@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 13.57145636445238,
+        "y": 2.8252506841723575
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 14.095805921052632,
+        "y": 2.0814144736842106
+      },
+      "isLocked": false,
+      "linkedName": "Red Reef K"
+    },
+    {
+      "anchor": {
+        "x": 16.078263397633968,
+        "y": 0.7710053750201314
+      },
+      "prevControl": {
+        "x": 15.279276315789472,
+        "y": 1.5810855263157895
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Red Left Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 125.74559313470442
+  },
+  "reversed": false,
+  "folder": "Red",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 120.74343839767722
+  },
+  "useDefaultConstraints": true
+}

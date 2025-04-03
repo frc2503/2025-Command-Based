@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 10.383706980171807,
+        "y": 3.3023214481477807
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 10.976095447126935,
+        "y": 3.6551356698389252
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 11.770264977104386,
+        "y": 3.8605957435960785
+      },
+      "prevControl": {
+        "x": 11.216790252551275,
+        "y": 3.856894550856388
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Red Reef H"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Red",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

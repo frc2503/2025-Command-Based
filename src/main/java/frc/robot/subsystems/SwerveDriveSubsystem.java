@@ -60,7 +60,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             SmartDashboard.putBoolean("Config is fallback?", true);
         }
 
-        AutoBuilder.configure(this::getPose, this::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
+        AutoBuilder.configure(this::getPose, swerveDrive::resetOdometry, swerveDrive::getRobotVelocity, this::drive,
                 new PPHolonomicDriveController(
                     new PIDConstants(0, 0,0),
                     new PIDConstants(1, 0, 0)),
@@ -137,7 +137,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        swerveDrive.setGyro(new Rotation3d(swerveDrive.getRoll().getMeasure(), swerveDrive.getPitch().getMeasure(), pose.getRotation().getMeasure()));
+        //swerveDrive.setGyro(new Rotation3d(swerveDrive.getRoll().getMeasure(), swerveDrive.getPitch().getMeasure(), pose.getRotation().getMeasure()));
+        System.out.println("test");
         swerveDrive.resetOdometry(pose);
     }
 

@@ -30,7 +30,7 @@ public final class Constants {
     public static final double FREE_CURRENT = 1.8;
     public static final double FREE_RPM = 5676/GEAR_RATIO;
     public static final Distance WHEEL_DIAMETER = Units.Inch.of(3.875);
-    public static final LinearVelocity MAXIMUM_VELOCITY = Units.FeetPerSecond.of(9);
+    public static final LinearVelocity MAXIMUM_VELOCITY = Units.FeetPerSecond.of(12);
     public static final LinearAcceleration MAXIMUM_ACCELERATION = Units.FeetPerSecondPerSecond.of(9);
     public static final double WHEEL_COEFFICIENT_OF_FRICTION = 1.19;
     public static final Current DRIVE_CURRENT_LIMIT = Units.Amps.of(40);
@@ -70,18 +70,18 @@ public final class Constants {
   }
   
   public static class ElevatorConstants {
-    public static final double maxVelocity = 4;         //m/s
-    public static final double maxAcceleration = 1.5;   //m/s^2
-    public static final double outputRange = .9;
+    public static final double maxVelocity = 5;         //m/s
+    public static final double maxAcceleration = 2;   //m/s^2
+    public static final double outputRange = .95;
 
     public static final double gearRatio = 60;
     public static final double pitchDiameter = 2.074;   //in
 
-    public static final double L1 = 1.2;                //in
+    public static final double L1 = 1.1;                //in
     public static final double L2 = 5;                  //in
     public static final double L3 = 13;                 //in
-    public static final double AlgaeL3 = 15;            //in
-    public static final double L4 = 25.25;              //in
+    public static final double AlgaeL3 = 20;            //in
+    public static final double L4 = 25.95;              //in
   }
 }
 
