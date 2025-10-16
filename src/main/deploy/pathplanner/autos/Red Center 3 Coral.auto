@@ -49,9 +49,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.5
+            "name": "Wait For Coral"
           }
         },
         {
@@ -136,7 +136,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Reef L to Red Left Coral Station"
+                  "pathName": "Red Reef J to Red Left Coral Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L1"
                 }
               }
             ]

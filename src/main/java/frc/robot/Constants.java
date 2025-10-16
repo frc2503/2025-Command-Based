@@ -81,7 +81,7 @@ public final class Constants {
     public static final double L2 = 5;                  //in
     public static final double L3 = 13;                 //in
     public static final double AlgaeL3 = 20;            //in
-    public static final double L4 = 25.95;              //in
+    public static final double L4 = 25.75;              //in
   }
 }
 

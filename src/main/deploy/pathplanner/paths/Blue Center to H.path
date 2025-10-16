@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.78116457567255,
-        "y": 3.8595792939488582
+        "x": 7.161560955855237,
+        "y": 4.773478999818509
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.562664473684211,
-        "y": 2.244983552631579
+        "x": 6.868134119928438,
+        "y": 4.485420452097838
       },
       "isLocked": false,
-      "linkedName": "Blue G"
+      "linkedName": "Blue Center Start"
     },
     {
       "anchor": {
-        "x": 1.1312035295168998,
-        "y": 1.0169906092345058
+        "x": 5.7794924920233886,
+        "y": 4.188978837744931
       },
       "prevControl": {
-        "x": 2.3922922620640845,
-        "y": 1.3057475928106124
+        "x": 6.278712014186318,
+        "y": 4.199463192876413
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station"
+      "linkedName": "Blue H"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 53.941964908546545
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Blue",

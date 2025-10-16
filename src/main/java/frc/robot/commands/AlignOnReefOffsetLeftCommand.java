@@ -4,11 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class AlignOnReefCommand extends Command {
+public class AlignOnReefOffsetLeftCommand extends Command {
     private VisionSubsystem vision;
     private SwerveDriveSubsystem swerve;
+    private final double LEFT_OFFSET = -5;
     
-    public AlignOnReefCommand(VisionSubsystem vision, SwerveDriveSubsystem swerve) {
+    public AlignOnReefOffsetLeftCommand(VisionSubsystem vision, SwerveDriveSubsystem swerve) {
         this.vision = vision;
         this.swerve = swerve;
         
@@ -18,14 +19,14 @@ public class AlignOnReefCommand extends Command {
     @Override
     public void execute() {
         double driveX;
-        if (vision.getIntakeTargetOffsetX() < 0) {
-            driveX = 0.15;
-        } else if (vision.getIntakeTargetOffsetX() > 0) {
+
+        if (vision.getAprilTagOffsetX() > LEFT_OFFSET) {
             driveX = -0.15;
+        } else if (vision.getAprilTagOffsetX() < LEFT_OFFSET) {
+            driveX = 0.15;
         } else {
             driveX = 0;
         }
-        
         swerve.drive(driveX, 0, 0, 0, 0, 1, false);
     }
 
@@ -36,6 +37,6 @@ public class AlignOnReefCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return vision.getIntakeTargetOffsetX() < 1 && vision.getIntakeTargetOffsetX() > -1 && vision.getIntakeTargetOffsetX() != 0;
+        return (vision.getAprilTagOffsetX() < LEFT_OFFSET + 0.25) && (vision.getAprilTagOffsetX() > LEFT_OFFSET - 0.25) && vision.getAprilTagOffsetX() != 0;
     }
 }

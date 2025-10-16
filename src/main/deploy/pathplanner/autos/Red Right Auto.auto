@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Left Start to Reef I"
+                  "pathName": "Red Right Start to Red Reef F"
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Reef K to Red Left Coral Station"
+                  "pathName": "Reef D to Coral Station"
                 }
               },
               {
@@ -59,15 +59,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Elevator L2"
+                  "pathName": "Coral Station to Red Reef E"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Left Coral Station to Red Reef L"
+                  "name": "Elevator L2"
                 }
               }
             ]

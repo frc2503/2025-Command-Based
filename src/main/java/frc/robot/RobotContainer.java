@@ -7,11 +7,14 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeArmCommand;
 import frc.robot.commands.AlignOnReefCommand;
+import frc.robot.commands.AlignOnReefOffsetLeftCommand;
+import frc.robot.commands.AlignOnReefOffsetRightCommand;
 import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.CoralShootCommand;
 import frc.robot.commands.ElevatorLevelOneCommand;
 import frc.robot.commands.ElevatorLevelTwoCommand;
+import frc.robot.commands.ElevatorZeroCommand;
 import frc.robot.commands.ElevatorLevelThreeCommand;
 import frc.robot.commands.ElevatorLevelThreeAlgaeCommand;
 import frc.robot.commands.ElevatorLevelFourCommand;
@@ -52,6 +55,7 @@ public class RobotContainer {
   private final CoralShootCommand shootCommand = new CoralShootCommand(coralSubsystem);
   private final WaitForCoralCommand waitForCoral = new WaitForCoralCommand(coralSubsystem);
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final ElevatorZeroCommand elevatorZeroCommand = new ElevatorZeroCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelOneCommand l1Command = new ElevatorLevelOneCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelTwoCommand l2Command = new ElevatorLevelTwoCommand(elevatorSubsystem, coralSubsystem);
   private final ElevatorLevelThreeCommand l3Command = new ElevatorLevelThreeCommand(elevatorSubsystem, coralSubsystem);
@@ -66,6 +70,8 @@ public class RobotContainer {
   private final ClimberOutCommand outCommand = new ClimberOutCommand(climberSubsystem, funnelSubsystem);
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   private final AlignOnReefCommand alignOnReefCommand = new AlignOnReefCommand(visionSubsystem, swerveDrive);
+  private final AlignOnReefOffsetLeftCommand alignOnReefOffsetLeftCommand = new AlignOnReefOffsetLeftCommand(visionSubsystem, swerveDrive);
+  private final AlignOnReefOffsetRightCommand alignOnReefOffsetRIghtCommand = new AlignOnReefOffsetRightCommand(visionSubsystem, swerveDrive);
   private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
@@ -76,7 +82,7 @@ public class RobotContainer {
     algaeIntakeSubsystem.register();
     funnelSubsystem.register();
     climberSubsystem.register();
-    visionSubsystem.register();
+    //visionSubsystem.register();
 
     configureBindings();
     registerNamedCommands();
@@ -102,6 +108,7 @@ public class RobotContainer {
     new Trigger(mechController.b()).onTrue(l2Command);
     new Trigger(mechController.x()).onTrue(l3Command);
     new Trigger(mechController.y()).onTrue(l3AlgaeCommand);
+    new Trigger(mechController.start()).whileTrue(elevatorZeroCommand);
     new Trigger(mechController.rightBumper()).onTrue(l4Command);
     //Switches elevator states when a, b, and y are pressed on the mech controller
 
@@ -115,7 +122,7 @@ public class RobotContainer {
     new Trigger(mechController.axisMagnitudeGreaterThan(5, .1)).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
-    //new Trigger(mechController.rightBumper()).whileTrue(alignOnReefCommand);
+    new Trigger(driveController.x()).whileTrue(alignOnReefCommand);
     
     new Trigger(driveController.rightBumper()).whileTrue(inCommand);
     new Trigger(driveController.leftBumper()).whileTrue(outCommand);
@@ -131,6 +138,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator L3", l3Command);
     NamedCommands.registerCommand("Elevator L4", l4Command);
     NamedCommands.registerCommand("Align On Reef", alignOnReefCommand);
+    NamedCommands.registerCommand("Align On Reef Left", alignOnReefOffsetLeftCommand);
+    NamedCommands.registerCommand("Align On Reef Right", alignOnReefOffsetRIghtCommand);
   }
 
   public Command getAutonomousCommand() {

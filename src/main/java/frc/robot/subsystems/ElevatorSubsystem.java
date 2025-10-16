@@ -95,12 +95,24 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
   // sets the intended state to stage 4 and starts movement to stage 4
 
+  public void lowerElevator() {
+    if (zeroSensor.get() != true) {
+      elevator.set(-0.05);
+    } else {
+      elevator.set(0);
+    }
+  }
+
   public void stopMotor() {
     elevator.set(0.0);
   }
 
   public ElevatorState getCurrentState() {
     return currentState;
+  }
+
+  public boolean isAtZero() {
+    return zeroSensor.get() == true;
   }
 
   @Override
@@ -115,7 +127,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       currentState = ElevatorState.ZERO;
       SmartDashboard.putBoolean("Elevator Zero", true);
       SmartDashboard.putString("Elevator Level", "ZERO");
-
     } else {
       SmartDashboard.putBoolean("Elevator Zero", false);
       // This method will be called once per scheduler run

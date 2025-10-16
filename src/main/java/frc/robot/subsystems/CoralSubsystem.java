@@ -48,6 +48,10 @@ public boolean getFrontSensorState() {
   return frontSensor.get();
 }
 
+public IntakeState getState() {
+  return intakeState;
+}
+
 //If the motor is not set back to 0 it continues to run
 
   @Override

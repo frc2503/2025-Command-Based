@@ -11,13 +11,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Start 1 to Reef G"
+                  "pathName": "Left Start to I"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator L3"
+                  "name": "Elevator L2"
                 }
               }
             ]
@@ -34,24 +34,24 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Elevator L1"
+                  "pathName": "I to Coral Station"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "G to Right Coral"
+                  "name": "Elevator L1"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 10.0
+            "name": "Wait For Coral"
           }
         },
         {
@@ -61,9 +61,28 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "G to Right Coral"
+                  "pathName": "Left Blue Station to J"
                 }
               },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {

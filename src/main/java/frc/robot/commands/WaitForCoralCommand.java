@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.CoralSubsystem.IntakeState;
 
 public class WaitForCoralCommand extends Command {
     private CoralSubsystem coral;
@@ -15,6 +16,6 @@ public class WaitForCoralCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return coral.getBackSensorState();
+        return coral.getState() == IntakeState.LOADED;
     }
 }

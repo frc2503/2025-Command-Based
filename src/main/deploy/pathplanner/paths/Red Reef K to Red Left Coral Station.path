@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.57145636445238,
-        "y": 2.8252506841723575
+        "x": 12.28410838366037,
+        "y": 2.9832914342740278
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.095805921052632,
-        "y": 2.0814144736842106
+        "x": 12.808457940260622,
+        "y": 2.239455223785881
       },
       "isLocked": false,
       "linkedName": "Red Reef K"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -48,7 +48,7 @@
   "folder": "Red",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.74343839767722
+    "rotation": 60.44983598065659
   },
   "useDefaultConstraints": true
 }
