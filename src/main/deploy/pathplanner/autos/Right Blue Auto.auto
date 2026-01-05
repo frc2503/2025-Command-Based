@@ -49,6 +49,18 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Coral"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Wait For Coral"
@@ -62,6 +74,68 @@
                 "type": "path",
                 "data": {
                   "pathName": "Right Blue to C"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "New New New Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait For Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Station to B"
                 }
               },
               {

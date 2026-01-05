@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4655564541736303,
-        "y": 0.7716735234999851
+        "x": 1.139640127401871,
+        "y": 0.9059793684648696
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.280345394736842,
-        "y": 1.3501644736842104
+        "x": 2.9138644892710497,
+        "y": 1.124828227874242
       },
       "isLocked": false,
       "linkedName": "Blue Right Coral Station "
     },
     {
       "anchor": {
-        "x": 4.99169378519432,
-        "y": 2.8258391093008925
+        "x": 4.753125,
+        "y": 2.8607730263157896
       },
       "prevControl": {
-        "x": 4.317839953380043,
-        "y": 2.2469309387291885
+        "x": 4.63286430709268,
+        "y": 2.140438954828043
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Blue C"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 1.75,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.4099750320765
+    "rotation": 121.34796913742466
   },
   "reversed": false,
   "folder": "Blue",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 54.05072167718372
+    "rotation": 54.45793468694537
   },
   "useDefaultConstraints": true
 }

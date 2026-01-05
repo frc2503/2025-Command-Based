@@ -140,6 +140,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align On Reef", alignOnReefCommand);
     NamedCommands.registerCommand("Align On Reef Left", alignOnReefOffsetLeftCommand);
     NamedCommands.registerCommand("Align On Reef Right", alignOnReefOffsetRIghtCommand);
+  
   }
 
   public Command getAutonomousCommand() {

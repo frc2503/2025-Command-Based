@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.15100611017784,
-        "y": 5.6353819678660715
+        "x": 12.989309210526315,
+        "y": 5.776151315789473
       },
       "isLocked": false,
       "linkedName": "Red Reef D"
     },
     {
       "anchor": {
-        "x": 16.120321311219914,
-        "y": 7.228742401953277
+        "x": 16.260690789473685,
+        "y": 7.20016447368421
       },
       "prevControl": {
-        "x": 15.250411184209844,
-        "y": 6.83453947368599
+        "x": 15.371537241411664,
+        "y": 6.873313519099353
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 1.75,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

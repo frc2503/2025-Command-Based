@@ -128,25 +128,6 @@
           "data": {
             "name": "Shoot Coral"
           }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Elevator L1"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "D to Start"
-                }
-              }
-            ]
-          }
         }
       ]
     }

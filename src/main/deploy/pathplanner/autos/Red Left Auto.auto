@@ -49,6 +49,18 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Coral"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Wait For Coral"

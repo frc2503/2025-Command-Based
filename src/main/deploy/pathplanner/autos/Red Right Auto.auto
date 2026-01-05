@@ -49,6 +49,18 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Coral"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Wait For Coral"
@@ -80,9 +92,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Elevator L1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red E to Right Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L1"
+                }
+              }
+            ]
           }
         }
       ]
