@@ -82,7 +82,7 @@ public class RobotContainer {
     algaeIntakeSubsystem.register();
     funnelSubsystem.register();
     climberSubsystem.register();
-    //visionSubsystem.register();
+    visionSubsystem.register();
 
     configureBindings();
     registerNamedCommands();

@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import java.util.Set;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -23,14 +24,6 @@ public class VisionSubsystem extends SubsystemBase {
   private static NetworkTableEntry intakeTargetArea;
   private static NetworkTableEntry intakeTargetSkew;
   private static NetworkTableEntry intakePipeline;
-  // AprilTag Limelight
-  private static NetworkTable aprilTagLimelight;
-  private static NetworkTableEntry aprilTagHasTarget;
-  private static NetworkTableEntry aprilTagTargetOffsetX;
-  private static NetworkTableEntry aprilTagTargetOffsetY;
-  private static NetworkTableEntry aprilTagTargetArea;
-  private static NetworkTableEntry aprilTagTargetSkew;
-  private static NetworkTableEntry aprilTagPipeline;
 
   private static Constraints pidConstraints;
   private static ProfiledPIDController drivePID;
@@ -44,18 +37,9 @@ public class VisionSubsystem extends SubsystemBase {
     inst = NetworkTableInstance.getDefault();
 
     initializeIntakeLimelight();
-    initializeAprilTagLimelight();
     
     pidConstraints = new Constraints(.5, .1);
     drivePID = new ProfiledPIDController(5, 0, 0, pidConstraints);
-  }
-
-  public double getAprilTagOffsetX() {
-    if (reefAprilTagIds.contains(detectedAprilTagId)) {
-      return aprilTagTargetOffsetX.getDouble(0);
-    } else {
-      return 0;
-    }
   }
 
   public double getIntakeTargetOffsetX() {
@@ -85,16 +69,6 @@ public class VisionSubsystem extends SubsystemBase {
     intakeTargetArea = intakeLimelight.getEntry("ta");
     intakeTargetSkew = intakeLimelight.getEntry("ts");
     intakePipeline = intakeLimelight.getEntry("pipeline");
-  }
-  
-  private void initializeAprilTagLimelight() {
-    aprilTagLimelight = inst.getTable("limelight-tags");
-    aprilTagHasTarget = intakeLimelight.getEntry("tv");
-    aprilTagTargetOffsetX = intakeLimelight.getEntry("tx");
-    aprilTagTargetOffsetY = intakeLimelight.getEntry("ty");
-    aprilTagTargetArea = intakeLimelight.getEntry("ta");
-    aprilTagTargetSkew = intakeLimelight.getEntry("ts");
-    aprilTagPipeline = intakeLimelight.getEntry("pipeline");
     detectedAprilTagId = intakeLimelight.getEntry("tid").getDouble(-1);
   }
 }
