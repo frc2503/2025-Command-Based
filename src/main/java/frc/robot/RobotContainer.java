@@ -102,7 +102,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     new Trigger(mechController.rightTrigger()).onTrue(shootCommand);
-    //Spins the coral intake when the right trigger is held on the mech controller
+    // Spins the coral intake when the right trigger is held on the mech controller
 
     new Trigger(mechController.a()).onTrue(l1Command);
     new Trigger(mechController.b()).onTrue(l2Command);
