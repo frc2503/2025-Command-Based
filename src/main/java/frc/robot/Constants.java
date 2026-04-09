@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.xml.stream.events.StartDocument;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
@@ -82,6 +84,12 @@ public final class Constants {
     public static final double L3 = 13;                 //in
     public static final double AlgaeL3 = 20;            //in
     public static final double L4 = 25.75;              //in
+  }
+
+  public static class ReefConstants {
+    public static final double RIGHT_POLE_X_OFFSET = -15;
+    public static final double LEFT_POLE_X_OFFSET = 15;
+    public static final double POLE_Y_OFFSET = -20;
   }
 }
 

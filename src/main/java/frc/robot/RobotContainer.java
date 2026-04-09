@@ -71,7 +71,7 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   private final AlignOnReefCommand alignOnReefCommand = new AlignOnReefCommand(visionSubsystem, swerveDrive);
   private final AlignOnReefOffsetLeftCommand alignOnReefOffsetLeftCommand = new AlignOnReefOffsetLeftCommand(visionSubsystem, swerveDrive);
-  private final AlignOnReefOffsetRightCommand alignOnReefOffsetRIghtCommand = new AlignOnReefOffsetRightCommand(visionSubsystem, swerveDrive);
+  private final AlignOnReefOffsetRightCommand alignOnReefOffsetRightCommand = new AlignOnReefOffsetRightCommand(visionSubsystem, swerveDrive);
   private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
@@ -122,7 +122,8 @@ public class RobotContainer {
     new Trigger(mechController.axisMagnitudeGreaterThan(5, .1)).whileTrue(armCommand);
     new Trigger(mechController.leftBumper()).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL2(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
     new Trigger(mechController.leftTrigger(.25)).onTrue(Commands.run(() -> algaeIntakeSubsystem.intakeL1(), algaeIntakeSubsystem)).onFalse(Commands.runOnce(() -> algaeIntakeSubsystem.stopAlgaeIntake(), algaeIntakeSubsystem));
-    new Trigger(driveController.x()).whileTrue(alignOnReefCommand);
+    new Trigger(driveController.x()).whileTrue(alignOnReefOffsetLeftCommand);
+    new Trigger(driveController.b()).whileTrue(alignOnReefOffsetRightCommand);
     
     new Trigger(driveController.rightBumper()).whileTrue(inCommand);
     new Trigger(driveController.leftBumper()).whileTrue(outCommand);
@@ -139,7 +140,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Elevator L4", l4Command);
     NamedCommands.registerCommand("Align On Reef", alignOnReefCommand);
     NamedCommands.registerCommand("Align On Reef Left", alignOnReefOffsetLeftCommand);
-    NamedCommands.registerCommand("Align On Reef Right", alignOnReefOffsetRIghtCommand);
+    NamedCommands.registerCommand("Align On Reef Right", alignOnReefOffsetRightCommand);
   
   }
 

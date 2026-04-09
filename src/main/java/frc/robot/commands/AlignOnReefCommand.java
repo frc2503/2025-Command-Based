@@ -1,30 +1,35 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ReefConstants;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AlignOnReefCommand extends Command {
     private VisionSubsystem vision;
     private SwerveDriveSubsystem swerve;
-    private static Constraints pidConstraints;
-    private static ProfiledPIDController drivePID;
+    private PIDController xPID;
+    private PIDController yPID;
+    private PIDController rotPID;
     
     public AlignOnReefCommand(VisionSubsystem vision, SwerveDriveSubsystem swerve) {
         this.vision = vision;
         this.swerve = swerve;
-        pidConstraints = new Constraints(.5, .1);
-        drivePID = new ProfiledPIDController(5, 0, 0, pidConstraints);
+        xPID = vision.getXPID();
+        yPID = vision.getYPID();
+        rotPID = vision.getRotPID();
         
         addRequirements(vision, swerve);
     }
 
     @Override
     public void execute() {
-        swerve.drive(drivePID.calculate(vision.getIntakeTargetOffsetX(), 0), 0, 0, 0, 0, 1, false);
-
+        double xSetpoint = MathUtil.clamp(xPID.calculate(vision.getIntakeTargetOffsetX(0), 0), -1, 1);
+        double ySetpoint = MathUtil.clamp(yPID.calculate(vision.getIntakeTargetOffsetY(ReefConstants.POLE_Y_OFFSET), ReefConstants.POLE_Y_OFFSET), -1, 1);
+        double rotSetpoint = MathUtil.clamp(rotPID.calculate(vision.getIntakeTargetSkew(), 0), -1, 1);
+        swerve.drive(xSetpoint, ySetpoint, rotSetpoint, 0, 0, 1, false);
     }
 
     @Override
@@ -34,6 +39,6 @@ public class AlignOnReefCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return vision.getIntakeTargetOffsetX() < 0.25 && vision.getIntakeTargetOffsetX() > -0.25 && vision.getIntakeTargetOffsetX() != 0;
+        return xPID.atSetpoint() && yPID.atSetpoint() && rotPID.atSetpoint();
     }
 }

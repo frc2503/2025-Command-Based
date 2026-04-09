@@ -5,8 +5,9 @@ package frc.robot.subsystems;
 
 import java.util.Set;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -25,8 +26,9 @@ public class VisionSubsystem extends SubsystemBase {
   private static NetworkTableEntry intakeTargetSkew;
   private static NetworkTableEntry intakePipeline;
 
-  private static Constraints pidConstraints;
-  private static ProfiledPIDController drivePID;
+  private static PIDController xPID;
+  private static PIDController yPID;
+  private static PIDController rotPID;
   private double detectedAprilTagId;
   private double targetOffset;
 
@@ -38,21 +40,40 @@ public class VisionSubsystem extends SubsystemBase {
 
     initializeIntakeLimelight();
     
-    pidConstraints = new Constraints(.5, .1);
-    drivePID = new ProfiledPIDController(5, 0, 0, pidConstraints);
+    xPID = new PIDController(.01, 0, 0);
+    xPID.setTolerance(.5, .2);
+    yPID = new PIDController(.01, 0, 0);
+    yPID.setTolerance(.25, .1);
+    rotPID = new PIDController(.01, 0, 0);
+    rotPID.setTolerance(.25, .1);
   }
 
-  public double getIntakeTargetOffsetX() {
-    return intakeTargetOffsetX.getDouble(0);
+  public double getIntakeTargetOffsetX(double defaultValue) {
+    return intakeTargetOffsetX.getDouble(defaultValue);
+  }
+
+  public double getIntakeTargetOffsetY(double defaultValue) {
+    return intakeTargetOffsetY.getDouble(defaultValue);
+  }
+
+  public double getIntakeTargetSkew() {
+    return intakeTargetSkew.getDouble(0);
   }
 
   public double targetOffset() {
-    return  getDrivePID().calculate(getIntakeTargetOffsetX(), 0);
+    return xPID.calculate(getIntakeTargetOffsetX(0), 0);
   }
 
-  public ProfiledPIDController getDrivePID() {
-    drivePID.reset(0);
-    return drivePID;
+  public PIDController getXPID() {
+    return xPID;
+  }
+
+  public PIDController getYPID() {
+    return yPID;
+  }
+
+  public PIDController getRotPID() {
+    return rotPID;
   }
 
   @Override

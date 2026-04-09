@@ -94,8 +94,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Speed Scale", speedScalar);
 
 
-        SmartDashboard.putNumber("F/B Intended Velosity", translation.getX());
-        SmartDashboard.putNumber("L/R Intended Velosity", translation.getY());
+        SmartDashboard.putNumber("F/B Intended Velocity", translation.getX());
+        SmartDashboard.putNumber("L/R Intended Velocity", translation.getY());
 
         if (Math.abs(driverRotation) < 0.075) {
             driverRotation = 0;
